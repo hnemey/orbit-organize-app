@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -95,9 +96,39 @@
 @layer base {
   * {
     @apply border-border;
+    /* Disable text selection by default */
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
   }
 
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Enable text selection only for editable elements */
+  input,
+  textarea,
+  [contenteditable="true"],
+  [contenteditable=""] {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+  }
+
+  /* Also enable text selection for specific input types */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="url"],
+  input[type="tel"],
+  input[type="number"] {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
   }
 }
