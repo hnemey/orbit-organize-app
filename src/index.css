@@ -7,49 +7,49 @@
 
 @layer base {
   :root {
-    /* Clean white-centered light mode */
-    --background: 255 255 255;
-    --foreground: 15 23 42;
+    /* Dark minimalist theme */
+    --background: 15 23 42;
+    --foreground: 248 250 252;
 
-    --card: 255 255 255;
-    --card-foreground: 15 23 42;
+    --card: 30 41 59;
+    --card-foreground: 248 250 252;
 
-    --popover: 255 255 255;
-    --popover-foreground: 15 23 42;
+    --popover: 30 41 59;
+    --popover-foreground: 248 250 252;
 
     --primary: 59 130 246;
     --primary-foreground: 255 255 255;
 
-    --secondary: 248 250 252;
-    --secondary-foreground: 51 65 85;
+    --secondary: 51 65 85;
+    --secondary-foreground: 248 250 252;
 
-    --muted: 248 250 252;
-    --muted-foreground: 100 116 139;
+    --muted: 51 65 85;
+    --muted-foreground: 148 163 184;
 
-    --accent: 241 245 249;
-    --accent-foreground: 15 23 42;
+    --accent: 51 65 85;
+    --accent-foreground: 248 250 252;
 
-    --destructive: 239 68 68;
-    --destructive-foreground: 255 255 255;
+    --destructive: 220 38 38;
+    --destructive-foreground: 248 250 252;
 
-    --border: 226 232 240;
-    --input: 255 255 255;
+    --border: 51 65 85;
+    --input: 51 65 85;
     --ring: 59 130 246;
 
     --radius: 0.5rem;
 
-    --sidebar-background: 255 255 255;
-    --sidebar-foreground: 15 23 42;
+    --sidebar-background: 15 23 42;
+    --sidebar-foreground: 248 250 252;
     --sidebar-primary: 59 130 246;
     --sidebar-primary-foreground: 255 255 255;
-    --sidebar-accent: 248 250 252;
-    --sidebar-accent-foreground: 15 23 42;
-    --sidebar-border: 226 232 240;
+    --sidebar-accent: 30 41 59;
+    --sidebar-accent-foreground: 248 250 252;
+    --sidebar-border: 51 65 85;
     --sidebar-ring: 59 130 246;
   }
 
   .dark {
-    /* Original dark mode */
+    /* Same as root for consistency */
     --background: 15 23 42;
     --foreground: 248 250 252;
 
