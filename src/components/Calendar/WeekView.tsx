@@ -55,7 +55,7 @@ const WeekView: React.FC<WeekViewProps> = ({
   });
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px]">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
         <div className="p-4 border-r border-gray-600">
@@ -74,7 +74,7 @@ const WeekView: React.FC<WeekViewProps> = ({
       </div>
 
       {/* Week grid with time slots */}
-      <div className="h-96 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto">
         {timeSlots.map((slot, index) => (
           <div key={index} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700">
             {/* Time column */}
@@ -93,7 +93,7 @@ const WeekView: React.FC<WeekViewProps> = ({
               return (
                 <div
                   key={format(date, 'yyyy-MM-dd')}
-                  className={`border-r border-gray-600 last:border-r-0 p-1 min-h-6 ${
+                  className={`border-r border-gray-600 last:border-r-0 p-1 min-h-4 ${
                     isCurrentDay ? 'bg-gray-700' : 'bg-gray-800'
                   }`}
                   onDrop={(e) => handleDrop(e, date)}

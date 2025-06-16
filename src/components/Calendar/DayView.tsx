@@ -49,7 +49,7 @@ const DayView: React.FC<DayViewProps> = ({
   });
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
+    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
       {/* Header with day and date */}
       <div className="bg-gray-700 px-6 py-4 border-b border-gray-600">
         <div className="flex items-center justify-between">
@@ -76,7 +76,7 @@ const DayView: React.FC<DayViewProps> = ({
 
       {/* Time grid */}
       <div 
-        className="overflow-y-auto h-96"
+        className="flex-1 overflow-y-auto"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
@@ -94,7 +94,7 @@ const DayView: React.FC<DayViewProps> = ({
               </div>
               
               {/* Task area */}
-              <div className="flex-1 px-3 py-1 min-h-6">
+              <div className="flex-1 px-3 py-1 min-h-4">
                 {tasksAtTime.map(task => (
                   <div
                     key={task.id}
