@@ -19,18 +19,8 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onToday
 }) => {
   const getHeaderTitle = () => {
-    switch (view) {
-      case 'month':
-        return format(currentDate, 'MMMM yyyy');
-      case 'week':
-        return format(currentDate, 'MMM yyyy');
-      case 'day':
-        return format(currentDate, 'EEEE, MMMM d, yyyy');
-      case 'year':
-        return format(currentDate, 'yyyy');
-      default:
-        return format(currentDate, 'MMMM yyyy');
-    }
+    // Use consistent format for all views: "Month Year"
+    return format(currentDate, 'MMMM yyyy');
   };
 
   return (
