@@ -89,16 +89,16 @@ const DayView: React.FC<DayViewProps> = ({
           return (
             <div key={index} className="flex border-b border-gray-600 hover:bg-gray-700">
               {/* Time column */}
-              <div className="w-32 px-8 py-4 text-lg text-gray-300 font-medium border-r border-gray-600">
+              <div className="w-32 px-4 py-2 text-sm text-gray-300 font-medium border-r border-gray-600">
                 {slot.displayTime}
               </div>
               
               {/* Task area */}
-              <div className="flex-1 px-8 py-4 min-h-16">
+              <div className="flex-1 px-4 py-2 min-h-8">
                 {tasksAtTime.map(task => (
                   <div
                     key={task.id}
-                    className="inline-flex items-center px-5 py-3 rounded-full text-lg font-medium text-white mb-3 mr-4 cursor-pointer"
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium text-white mb-1 mr-2 cursor-pointer"
                     style={{ backgroundColor: getProjectColor(task.projectId) }}
                     title={`${task.name} - ${task.estimatedMinutes} minutes`}
                     draggable

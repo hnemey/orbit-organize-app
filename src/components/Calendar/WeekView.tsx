@@ -78,7 +78,7 @@ const WeekView: React.FC<WeekViewProps> = ({
         {timeSlots.map((slot, index) => (
           <div key={index} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700">
             {/* Time column */}
-            <div className="p-4 border-r border-gray-600 text-lg text-gray-300 font-medium">
+            <div className="p-2 border-r border-gray-600 text-sm text-gray-300 font-medium">
               {slot.displayTime}
             </div>
             
@@ -93,17 +93,17 @@ const WeekView: React.FC<WeekViewProps> = ({
               return (
                 <div
                   key={format(date, 'yyyy-MM-dd')}
-                  className={`border-r border-gray-600 last:border-r-0 p-3 min-h-16 ${
+                  className={`border-r border-gray-600 last:border-r-0 p-1 min-h-8 ${
                     isCurrentDay ? 'bg-gray-700' : 'bg-gray-800'
                   }`}
                   onDrop={(e) => handleDrop(e, date)}
                   onDragOver={handleDragOver}
                 >
-                  <div className="space-y-2">
-                    {dayTasks.slice(0, 3).map(task => (
+                  <div className="space-y-1">
+                    {dayTasks.slice(0, 1).map(task => (
                       <div
                         key={task.id}
-                        className="text-sm p-3 rounded text-white truncate cursor-pointer"
+                        className="text-xs p-1 rounded text-white truncate cursor-pointer"
                         style={{ backgroundColor: getProjectColor(task.projectId) }}
                         title={task.name}
                         draggable
@@ -112,9 +112,9 @@ const WeekView: React.FC<WeekViewProps> = ({
                         {task.name}
                       </div>
                     ))}
-                    {dayTasks.length > 3 && (
-                      <div className="text-sm text-gray-400">
-                        +{dayTasks.length - 3}
+                    {dayTasks.length > 1 && (
+                      <div className="text-xs text-gray-400">
+                        +{dayTasks.length - 1}
                       </div>
                     )}
                   </div>
