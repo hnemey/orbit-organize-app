@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, isToday } from 'date-fns';
 
@@ -16,8 +16,19 @@ const DayView: React.FC<DayViewProps> = ({
   projects,
   onTaskMove
 }) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dateStr = format(currentDate, 'yyyy-MM-dd');
   const dayTasks = tasks.filter(task => task.scheduledDate === dateStr);
+
+  // Scroll to 6AM on component mount
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      // 6AM is the 12th slot (index 12 * 2 = 24 in 30-minute intervals)
+      const sixAmSlot = 12 * 2; // 6AM in 30-minute slots
+      const slotHeight = 32; // Approximate height of each time slot
+      scrollContainerRef.current.scrollTop = sixAmSlot * slotHeight;
+    }
+  }, []);
 
   const getProjectColor = (projectId: string) => {
     const project = projects.find(p => p.id === projectId);
@@ -35,7 +46,7 @@ const DayView: React.FC<DayViewProps> = ({
   };
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
+    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[600px] flex flex-col">
       {/* Header with day and date */}
       <div className="bg-gray-700 px-6 py-4 border-b border-gray-600">
         <div className="flex items-center justify-between">
@@ -60,8 +71,9 @@ const DayView: React.FC<DayViewProps> = ({
         <h3 className="text-sm font-medium text-gray-300">Time</h3>
       </div>
 
-      {/* Time grid - scrollable for all 24 hours */}
+      {/* Time grid - scrollable through all 24 hours */}
       <div 
+        ref={scrollContainerRef}
         className="flex-1 overflow-y-auto"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -83,14 +95,14 @@ const DayView: React.FC<DayViewProps> = ({
           });
 
           return (
-            <div key={i} className="flex border-b border-gray-600 hover:bg-gray-700">
+            <div key={i} className="flex border-b border-gray-600 hover:bg-gray-700 h-8">
               {/* Time column */}
-              <div className="w-24 px-3 py-1 text-xs text-gray-300 font-medium border-r border-gray-600">
+              <div className="w-24 px-3 py-1 text-xs text-gray-300 font-medium border-r border-gray-600 flex items-center">
                 {displayTime}
               </div>
               
               {/* Task area */}
-              <div className="flex-1 px-3 py-1 min-h-4">
+              <div className="flex-1 px-3 py-1 flex items-center">
                 {tasksAtTime.map(task => (
                   <div
                     key={task.id}

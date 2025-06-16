@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
 
@@ -16,8 +16,19 @@ const WeekView: React.FC<WeekViewProps> = ({
   projects,
   onTaskMove
 }) => {
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
   const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
+  // Scroll to 6AM on component mount
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      // 6AM is the 12th slot (index 12 * 2 = 24 in 30-minute intervals)
+      const sixAmSlot = 12 * 2; // 6AM in 30-minute slots
+      const slotHeight = 32; // Approximate height of each time slot
+      scrollContainerRef.current.scrollTop = sixAmSlot * slotHeight;
+    }
+  }, []);
 
   const getTasksForDate = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
@@ -40,22 +51,8 @@ const WeekView: React.FC<WeekViewProps> = ({
     e.preventDefault();
   };
 
-  // Generate 30-minute time slots for 12 hours (24 slots)
-  const timeSlots = Array.from({ length: 24 }, (_, i) => {
-    const hour = Math.floor(i / 2);
-    const minute = (i % 2) * 30;
-    const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-    
-    // Convert to 12-hour format for display
-    const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
-    
-    return { time24, displayTime };
-  });
-
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[600px] flex flex-col">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
         <div className="p-4 border-r border-gray-600">
@@ -73,8 +70,11 @@ const WeekView: React.FC<WeekViewProps> = ({
         ))}
       </div>
 
-      {/* Week grid with time slots - scrollable */}
-      <div className="flex-1 overflow-y-auto">
+      {/* Week grid with time slots - scrollable through all 24 hours */}
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto"
+      >
         {/* Generate all 48 time slots for full 24 hours */}
         {Array.from({ length: 48 }, (_, i) => {
           const hour = Math.floor(i / 2);
@@ -87,9 +87,9 @@ const WeekView: React.FC<WeekViewProps> = ({
           const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
 
           return (
-            <div key={i} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700">
+            <div key={i} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700 h-8">
               {/* Time column */}
-              <div className="p-1 border-r border-gray-600 text-xs text-gray-300 font-medium">
+              <div className="p-1 border-r border-gray-600 text-xs text-gray-300 font-medium flex items-center">
                 {displayTime}
               </div>
               
@@ -104,7 +104,7 @@ const WeekView: React.FC<WeekViewProps> = ({
                 return (
                   <div
                     key={format(date, 'yyyy-MM-dd')}
-                    className={`border-r border-gray-600 last:border-r-0 p-1 min-h-4 ${
+                    className={`border-r border-gray-600 last:border-r-0 p-1 ${
                       isCurrentDay ? 'bg-gray-700' : 'bg-gray-800'
                     }`}
                     onDrop={(e) => handleDrop(e, date)}
