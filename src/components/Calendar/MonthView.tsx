@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isToday, isSameMonth } from 'date-fns';
@@ -48,7 +47,7 @@ const MonthView: React.FC<MonthViewProps> = ({
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px]">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[600px]">
       {/* Week day headers */}
       <div className="grid grid-cols-7 bg-gray-700 border-b border-gray-600">
         {weekDays.map(day => (

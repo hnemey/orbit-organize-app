@@ -24,7 +24,7 @@ const YearView: React.FC<YearViewProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-8 h-[800px]">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-8 h-[600px]">
       <div className="grid grid-cols-3 gap-8 h-full">
         {months.map((month, index) => {
           const monthTasks = getTasksForMonth(month);

@@ -54,7 +54,7 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
 
   return (
     <div 
-      className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 h-[1200px] flex flex-col"
+      className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 h-[600px] flex flex-col"
       onDrop={handleDrop}
       onDragOver={handleDragOver}
     >

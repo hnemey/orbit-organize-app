@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
@@ -66,7 +65,7 @@ const WeekView: React.FC<WeekViewProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px] flex flex-col">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[600px] flex flex-col">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
         <div className="p-3 border-r border-gray-600">
@@ -125,7 +124,7 @@ const WeekView: React.FC<WeekViewProps> = ({
         {/* Overlay tasks as positioned elements */}
         {weekDays.map((date, dayIndex) => {
           const dayTasks = getTasksForDate(date);
-          const columnWidth = `calc((100% - 12.5%) / 7)`; // Subtract time column width, divide by 7 days
+          const columnWidth = `calc((100% - 12.5%) / 7)`;
           const leftOffset = `calc(12.5% + ${dayIndex} * ${columnWidth})`;
 
           return dayTasks.map(task => {
