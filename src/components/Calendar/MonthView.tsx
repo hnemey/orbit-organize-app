@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isToday, isSameMonth } from 'date-fns';
@@ -46,18 +45,18 @@ const MonthView: React.FC<MonthViewProps> = ({
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px]">
       {/* Week day headers */}
       <div className="grid grid-cols-7 bg-gray-700 border-b border-gray-600">
         {weekDays.map(day => (
-          <div key={day} className="p-3 text-center border-r last:border-r-0 border-gray-600">
-            <span className="text-sm font-medium text-gray-300">{day}</span>
+          <div key={day} className="p-4 text-center border-r last:border-r-0 border-gray-600">
+            <span className="text-base font-medium text-gray-300">{day}</span>
           </div>
         ))}
       </div>
 
       {/* Calendar grid */}
-      <div className="grid grid-cols-7">
+      <div className="grid grid-cols-7 h-full">
         {days.map(date => {
           const dayTasks = getTasksForDate(date);
           const isCurrentMonth = isSameMonth(date, currentDate);
@@ -66,23 +65,23 @@ const MonthView: React.FC<MonthViewProps> = ({
           return (
             <div
               key={format(date, 'yyyy-MM-dd')}
-              className={`min-h-32 border-r border-b border-gray-600 last:border-r-0 p-2 ${
+              className={`min-h-24 h-full border-r border-b border-gray-600 last:border-r-0 p-3 ${
                 !isCurrentMonth ? 'bg-gray-900 text-gray-500' : 'bg-gray-800'
               } ${isCurrentDay ? 'bg-gray-700' : ''}`}
               onDrop={(e) => handleDrop(e, date)}
               onDragOver={handleDragOver}
             >
-              <div className={`text-sm font-medium mb-2 ${
+              <div className={`text-base font-medium mb-3 ${
                 isCurrentDay ? 'text-blue-400' : isCurrentMonth ? 'text-white' : 'text-gray-500'
               }`}>
                 {format(date, 'd')}
               </div>
 
               <div className="space-y-1">
-                {dayTasks.slice(0, 3).map(task => (
+                {dayTasks.slice(0, 4).map(task => (
                   <div
                     key={task.id}
-                    className="text-xs p-1 rounded text-white truncate cursor-pointer"
+                    className="text-sm p-2 rounded text-white truncate cursor-pointer"
                     style={{ backgroundColor: getProjectColor(task.projectId) }}
                     title={task.name}
                     draggable
@@ -91,9 +90,9 @@ const MonthView: React.FC<MonthViewProps> = ({
                     {task.name}
                   </div>
                 ))}
-                {dayTasks.length > 3 && (
-                  <div className="text-xs text-gray-400">
-                    +{dayTasks.length - 3} more
+                {dayTasks.length > 4 && (
+                  <div className="text-sm text-gray-400">
+                    +{dayTasks.length - 4} more
                   </div>
                 )}
               </div>

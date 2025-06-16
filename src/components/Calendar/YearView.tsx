@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfYear, addMonths } from 'date-fns';
@@ -24,8 +23,8 @@ const YearView: React.FC<YearViewProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
-      <div className="grid grid-cols-3 gap-6">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-8 h-[400px]">
+      <div className="grid grid-cols-3 gap-8 h-full">
         {months.map((month, index) => {
           const monthTasks = getTasksForMonth(month);
           
@@ -33,17 +32,17 @@ const YearView: React.FC<YearViewProps> = ({
             <div
               key={index}
               onClick={() => onMonthClick(index)}
-              className="bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition-colors border border-gray-600"
+              className="bg-gray-700 rounded-lg p-6 cursor-pointer hover:bg-gray-600 transition-colors border border-gray-600 flex flex-col justify-center"
             >
-              <h3 className="text-lg font-semibold text-white mb-3 text-center">
+              <h3 className="text-xl font-semibold text-white mb-4 text-center">
                 {format(month, 'MMMM')}
               </h3>
               
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-400 mb-1">
+                <div className="text-3xl font-bold text-blue-400 mb-2">
                   {monthTasks.length}
                 </div>
-                <div className="text-xs text-gray-400">
+                <div className="text-sm text-gray-400">
                   {monthTasks.length === 1 ? 'task' : 'tasks'}
                 </div>
               </div>
