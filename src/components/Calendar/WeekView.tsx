@@ -55,7 +55,7 @@ const WeekView: React.FC<WeekViewProps> = ({
   });
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1800px]">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px]">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
         <div className="p-6 border-r border-gray-600">
