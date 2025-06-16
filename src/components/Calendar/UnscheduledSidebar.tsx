@@ -39,7 +39,7 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700">
+    <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 h-full flex flex-col">
       <div className="p-4 border-b border-gray-600">
         <h3 className="text-lg font-semibold text-white mb-3">Unscheduled Tasks</h3>
         
@@ -57,7 +57,7 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
         </select>
       </div>
 
-      <div className="p-4 max-h-96 overflow-y-auto">
+      <div className="p-4 flex-1 overflow-y-auto">
         <div className="space-y-3">
           {tasks.map(task => (
             <div

@@ -128,10 +128,10 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
         onToday={goToToday}
       />
 
-      <div className="flex gap-6">
+      <div className="flex gap-6 h-full">
         {/* Show unscheduled sidebar for day and week views */}
         {(view === 'day' || view === 'week') && (
-          <div className="w-80">
+          <div className="w-80 h-full">
             <UnscheduledSidebar
               tasks={getUnscheduledTasks()}
               projects={projects}
@@ -147,7 +147,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
 
         {/* Show unscheduled sidebar for month and year views on the right */}
         {(view === 'month' || view === 'year') && (
-          <div className="w-80">
+          <div className="w-80 h-full">
             <UnscheduledSidebar
               tasks={getUnscheduledTasks()}
               projects={projects}
