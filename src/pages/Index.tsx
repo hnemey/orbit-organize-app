@@ -80,28 +80,35 @@ const Index = () => {
           <div className="min-h-screen w-full px-4 py-8">
             <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <TodaysSchedule
-                tasks={tasks}
-                projects={projects}
-                onTaskComplete={handleTaskComplete}
-                onTaskEdit={handleTaskEdit}
-              />
-              
-              <TodoList
-                tasks={tasks}
-                projects={projects}
-                onTaskComplete={handleTaskComplete}
-                onTaskEdit={handleTaskEdit}
-              />
-            </div>
+            {/* 3-column grid layout */}
+            <div className="grid grid-cols-3 gap-8 h-full">
+              {/* First column - Today's Schedule */}
+              <div className="col-span-1">
+                <TodaysSchedule
+                  tasks={tasks}
+                  projects={projects}
+                  onTaskComplete={handleTaskComplete}
+                  onTaskEdit={handleTaskEdit}
+                />
+              </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <Timer />
-              <div></div>
-            </div>
+              {/* Second and third columns - Stacked components */}
+              <div className="col-span-2 space-y-8">
+                {/* Todo List spans both columns */}
+                <TodoList
+                  tasks={tasks}
+                  projects={projects}
+                  onTaskComplete={handleTaskComplete}
+                  onTaskEdit={handleTaskEdit}
+                />
 
-            <HabitProgressChart habits={habits} />
+                {/* Timer and Daily Habit Progress side by side */}
+                <div className="grid grid-cols-2 gap-8">
+                  <Timer />
+                  <HabitProgressChart habits={habits} />
+                </div>
+              </div>
+            </div>
           </div>
         );
       case 'habits':
