@@ -27,58 +27,67 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   onToggleTask,
   onTaskClick
 }) => {
-  const [showAddTask, setShowAddTask] = useState(false);
-  const [editingProject, setEditingProject] = useState(false);
+  const [isAddingTask, setIsAddingTask] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(project.name);
 
-  const handleEditProject = () => {
+  const completedTasks = tasks.filter(task => task.completed).length;
+  const totalTasks = tasks.length;
+  const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+
+  const handleEditSave = () => {
     if (editName.trim() && editName !== project.name) {
-      onEditProject(project.id, { name: editName.trim() });
+      onEditProject(project.id, { name: editName });
     }
-    setEditingProject(false);
+    setIsEditing(false);
+  };
+
+  const handleEditCancel = () => {
+    setEditName(project.name);
+    setIsEditing(false);
   };
 
   const handleAddTask = (task: Omit<Task, 'id'>) => {
     onAddTask(project.id, task);
-    setShowAddTask(false);
+    setIsAddingTask(false);
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border-l-4" style={{ borderLeftColor: project.color }}>
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex-1">
-          {editingProject ? (
+    <div className="bg-gray-800 rounded-lg p-6 shadow-lg">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div
+            className="w-4 h-4 rounded-full"
+            style={{ backgroundColor: project.color }}
+          />
+          {isEditing ? (
             <input
               value={editName}
               onChange={(e) => setEditName(e.target.value)}
-              onBlur={handleEditProject}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') handleEditProject();
-                if (e.key === 'Escape') {
-                  setEditName(project.name);
-                  setEditingProject(false);
-                }
+                if (e.key === 'Enter') handleEditSave();
+                if (e.key === 'Escape') handleEditCancel();
               }}
-              className="bg-gray-700 text-white px-2 py-1 rounded text-lg font-semibold w-full"
+              onBlur={handleEditSave}
+              className="bg-gray-700 text-white px-2 py-1 rounded text-lg font-semibold"
               autoFocus
             />
           ) : (
             <h3 
-              className="text-lg font-semibold text-white cursor-pointer hover:text-blue-400 transition-colors"
-              onClick={() => setEditingProject(true)}
+              className="text-xl font-semibold text-white cursor-pointer hover:text-blue-400"
+              onClick={() => setIsEditing(true)}
             >
               {project.name}
             </h3>
           )}
-          <p className="text-sm text-gray-400">{tasks.length} tasks</p>
         </div>
         
         <div className="flex gap-2">
           <button
-            onClick={() => setEditingProject(true)}
+            onClick={() => setIsAddingTask(true)}
             className="text-blue-400 hover:text-blue-300 text-sm"
           >
-            Edit
+            Add Task
           </button>
           <button
             onClick={() => {
@@ -93,33 +102,47 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       </div>
 
-      {project.notes && (
-        <p className="text-gray-300 text-sm mb-4 italic">"{project.notes}"</p>
-      )}
-
+      {/* Progress Bar */}
       <div className="mb-4">
-        <button
-          onClick={() => setShowAddTask(!showAddTask)}
-          className="text-blue-400 hover:text-blue-300 text-sm font-medium"
-        >
-          {showAddTask ? '- Cancel' : '+ Add Task'}
-        </button>
+        <div className="flex justify-between text-sm text-gray-400 mb-1">
+          <span>Progress</span>
+          <span>{completedTasks}/{totalTasks} tasks</span>
+        </div>
+        <div className="w-full bg-gray-700 rounded-full h-2">
+          <div
+            className="h-2 rounded-full transition-all duration-300"
+            style={{ 
+              width: `${progress}%`,
+              backgroundColor: project.color 
+            }}
+          />
+        </div>
       </div>
 
-      {showAddTask && (
-        <div className="mb-4">
-          <AddTaskForm onAdd={handleAddTask} />
-        </div>
+      {/* Project Description */}
+      {project.description && (
+        <p className="text-gray-400 text-sm mb-4">{project.description}</p>
       )}
 
+      {/* Tasks */}
       <TaskList
         tasks={tasks}
-        projectColor={project.color}
         onEditTask={onEditTask}
         onDeleteTask={onDeleteTask}
         onToggleTask={onToggleTask}
         onTaskClick={onTaskClick}
       />
+
+      {/* Add Task Form */}
+      {isAddingTask && (
+        <div className="mt-4 border-t border-gray-700 pt-4">
+          <AddTaskForm
+            projectId={project.id}
+            onAdd={handleAddTask}
+            onCancel={() => setIsAddingTask(false)}
+          />
+        </div>
+      )}
     </div>
   );
 };

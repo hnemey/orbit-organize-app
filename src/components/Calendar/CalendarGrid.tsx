@@ -8,7 +8,6 @@ interface CalendarGridProps {
   dates: Date[];
   tasks: Task[];
   projects: Project[];
-  timeWindowStart: number;
   onTaskMove: (taskId: string, newDate: string, newTime: string) => void;
   onTaskUpdate: (taskId: string, updates: Partial<Task>) => void;
   onTaskUnschedule: (taskId: string) => void;
@@ -18,7 +17,6 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   dates,
   tasks,
   projects,
-  timeWindowStart,
   onTaskMove,
   onTaskUpdate,
   onTaskUnschedule
@@ -28,8 +26,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   const getTimeSlots = () => {
     const slots = [];
-    const endHour = Math.min(timeWindowStart + 12, 24);
-    for (let i = timeWindowStart; i < endHour; i++) {
+    for (let i = 0; i < 24; i++) {
       slots.push(`${i.toString().padStart(2, '0')}:00`);
       slots.push(`${i.toString().padStart(2, '0')}:30`);
     }
@@ -88,7 +85,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   return (
     <div className="bg-gray-800 rounded-lg overflow-hidden">
-      <div className="grid grid-cols-[100px_1fr] max-h-96 overflow-y-auto">
+      <div className="grid grid-cols-[100px_1fr] h-[800px] overflow-y-auto">
         {/* Header */}
         <div className="bg-gray-700 p-3 border-b border-gray-600 sticky top-0 z-10">
           <span className="text-sm font-medium text-gray-300">Time</span>
@@ -126,7 +123,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                 return (
                   <div
                     key={`${dateStr}-${timeSlot}`}
-                    className={`min-h-16 border-l border-gray-600 p-1 relative ${
+                    className={`min-h-8 border-l border-gray-600 p-1 relative ${
                       isDropZone ? 'bg-blue-600 bg-opacity-20' : ''
                     }`}
                     onDragOver={(e) => handleDragOver(e, dateStr, timeSlot)}

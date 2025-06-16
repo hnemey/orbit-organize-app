@@ -54,37 +54,6 @@ const HabitsGrid: React.FC<HabitsGridProps> = ({
 
   return (
     <div className="bg-gray-800 rounded-lg p-6">
-      {/* Daily Progress Bars */}
-      <div className="mb-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Daily Progress</h3>
-        <div className="flex gap-1 overflow-x-auto pb-2">
-          {monthDays.map(day => {
-            const progress = calculateDailyProgress(day);
-            const isFuture = day > new Date();
-            const isToday = isCurrentDay(day);
-            
-            return (
-              <div key={formatDate(day)} className="flex-shrink-0 flex flex-col items-center">
-                <div className="text-xs text-gray-400 mb-1">{day.getDate()}</div>
-                <div className="w-4 h-16 bg-gray-700 rounded relative">
-                  {!isFuture && (
-                    <div
-                      className={`absolute bottom-0 w-full rounded ${
-                        isToday ? 'bg-blue-400' : 'bg-blue-600'
-                      }`}
-                      style={{ height: `${progress}%` }}
-                    />
-                  )}
-                  {isToday && (
-                    <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-blue-400 rounded-full" />
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
       {/* Habits Table */}
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -94,8 +63,24 @@ const HabitsGrid: React.FC<HabitsGridProps> = ({
               <th className="text-center text-white font-semibold py-3 px-4 w-20">Progress</th>
               <th className="text-center text-white font-semibold py-3 px-4 w-24">Actions</th>
               {monthDays.map(day => (
-                <th key={formatDate(day)} className="text-center text-gray-400 py-3 px-1 min-w-8">
-                  {day.getDate()}
+                <th key={formatDate(day)} className="text-center text-gray-400 py-3 px-1 min-w-8 relative">
+                  <div className="mb-2">{day.getDate()}</div>
+                  {/* Daily Progress Bar */}
+                  <div className="w-full h-2 bg-gray-700 rounded mx-auto">
+                    {(() => {
+                      const progress = calculateDailyProgress(day);
+                      const isFuture = day > new Date();
+                      const isToday = isCurrentDay(day);
+                      return !isFuture ? (
+                        <div
+                          className={`h-full rounded ${
+                            isToday ? 'bg-blue-400' : 'bg-blue-600'
+                          }`}
+                          style={{ width: `${progress}%` }}
+                        />
+                      ) : null;
+                    })()}
+                  </div>
                 </th>
               ))}
             </tr>

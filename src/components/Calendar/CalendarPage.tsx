@@ -17,7 +17,6 @@ type ViewType = 'week' | 'day';
 const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksChange }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<ViewType>('week');
-  const [timeWindowStart, setTimeWindowStart] = useState(8); // 8 AM
   const [selectedProject, setSelectedProject] = useState<string>('all');
 
   const handleTaskUpdate = (taskId: string, updates: Partial<Task>) => {
@@ -59,13 +58,6 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksCha
     setCurrentDate(new Date());
   };
 
-  const adjustTimeWindow = (direction: 'up' | 'down') => {
-    setTimeWindowStart(prev => {
-      const newStart = direction === 'up' ? prev - 2 : prev + 2;
-      return Math.max(0, Math.min(12, newStart)); // 0 AM to 12 PM (so we can show 12 hours from there)
-    });
-  };
-
   const getUnscheduledTasks = () => {
     let unscheduled = tasks.filter(task => !task.scheduledDate && !task.completed);
     
@@ -92,8 +84,6 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksCha
         onViewChange={setView}
         onNavigate={navigateDate}
         onGoToToday={goToToday}
-        timeWindowStart={timeWindowStart}
-        onTimeWindowChange={adjustTimeWindow}
       />
 
       <div className="flex gap-6">
@@ -102,7 +92,6 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksCha
             dates={getViewDates()}
             tasks={getScheduledTasks()}
             projects={projects}
-            timeWindowStart={timeWindowStart}
             onTaskMove={handleTaskMove}
             onTaskUpdate={handleTaskUpdate}
             onTaskUnschedule={handleTaskUnschedule}
