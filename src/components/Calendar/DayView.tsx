@@ -59,7 +59,7 @@ const DayView: React.FC<DayViewProps> = ({
   };
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[600px] flex flex-col">
+    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
       {/* Header with day and date */}
       <div className="bg-gray-700 px-4 py-3 border-b border-gray-600">
         <div className="flex items-center justify-between">

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Task, Project } from '../../types';
 import CalendarHeader from './CalendarHeader';
@@ -173,7 +172,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-full mx-auto px-4 py-8">
       <CalendarHeader
         currentDate={currentDate}
         view={view}
