@@ -1,40 +1,30 @@
-
 import React from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfYear, addMonths } from 'date-fns';
-
 interface YearViewProps {
   currentDate: Date;
   tasks: Task[];
   projects: Project[];
   onMonthClick: (month: number) => void;
 }
-
 const YearView: React.FC<YearViewProps> = ({
   currentDate,
   tasks,
   onMonthClick
 }) => {
   const yearStart = startOfYear(currentDate);
-  const months = Array.from({ length: 12 }, (_, i) => addMonths(yearStart, i));
-
+  const months = Array.from({
+    length: 12
+  }, (_, i) => addMonths(yearStart, i));
   const getTasksForMonth = (month: Date) => {
     const monthStr = format(month, 'yyyy-MM');
     return tasks.filter(task => task.scheduledDate?.startsWith(monthStr));
   };
-
-  return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-12 h-[800px]">
+  return <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-12 h-[800px]">
       <div className="grid grid-cols-3 gap-12 h-full">
         {months.map((month, index) => {
-          const monthTasks = getTasksForMonth(month);
-          
-          return (
-            <div
-              key={index}
-              onClick={() => onMonthClick(index)}
-              className="bg-gray-700 rounded-lg p-8 cursor-pointer hover:bg-gray-600 transition-colors border border-gray-600 flex flex-col justify-center"
-            >
+        const monthTasks = getTasksForMonth(month);
+        return <div key={index} onClick={() => onMonthClick(index)} className="bg-gray-700 rounded-lg p-8 cursor-pointer hover:bg-gray-600 transition-colors border border-gray-600 flex flex-col justify-center px-[12px] py-0">
               <h3 className="text-2xl font-semibold text-white mb-6 text-center">
                 {format(month, 'MMMM')}
               </h3>
@@ -47,12 +37,9 @@ const YearView: React.FC<YearViewProps> = ({
                   {monthTasks.length === 1 ? 'task' : 'tasks'}
                 </div>
               </div>
-            </div>
-          );
-        })}
+            </div>;
+      })}
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default YearView;
