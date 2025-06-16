@@ -1,8 +1,8 @@
 
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { Habit } from '../../types';
-import { formatDate, isCurrentDay } from '../../utils/dateUtils';
+import { formatDate } from '../../utils/dateUtils';
 
 interface ProgressOverviewProps {
   habits: Habit[];
@@ -10,20 +10,6 @@ interface ProgressOverviewProps {
 }
 
 const ProgressOverview: React.FC<ProgressOverviewProps> = ({ habits, monthDays }) => {
-  const calculateDailyProgress = () => {
-    return monthDays.map(day => {
-      const dateStr = formatDate(day);
-      if (day > new Date()) return { day: day.getDate(), percentage: null };
-      
-      if (habits.length === 0) return { day: day.getDate(), percentage: 0 };
-      
-      const completedHabits = habits.filter(habit => habit.completions[dateStr]);
-      const percentage = Math.round((completedHabits.length / habits.length) * 100);
-      
-      return { day: day.getDate(), percentage };
-    }).filter(data => data.percentage !== null);
-  };
-
   const calculateWeeklyProgress = () => {
     const weeks = [];
     for (let i = 0; i < monthDays.length; i += 7) {
@@ -57,12 +43,11 @@ const ProgressOverview: React.FC<ProgressOverviewProps> = ({ habits, monthDays }
     return Math.round((totalCompletions / totalPossibleCompletions) * 100);
   };
 
-  const dailyData = calculateDailyProgress();
   const weeklyData = calculateWeeklyProgress();
   const overallProgress = calculateOverallProgress();
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <>
       {/* Overall Progress Circle */}
       <div className="bg-gray-800 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Overall Progress</h3>
@@ -95,24 +80,6 @@ const ProgressOverview: React.FC<ProgressOverviewProps> = ({ habits, monthDays }
         </div>
       </div>
 
-      {/* Daily Progress Chart */}
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Daily Progress</h3>
-        <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={dailyData}>
-            <XAxis dataKey="day" stroke="#9CA3AF" />
-            <YAxis stroke="#9CA3AF" />
-            <Line
-              type="monotone"
-              dataKey="percentage"
-              stroke="#3B82F6"
-              strokeWidth={2}
-              dot={{ fill: '#3B82F6' }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-
       {/* Weekly Progress Chart */}
       <div className="bg-gray-800 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Weekly Progress</h3>
@@ -124,7 +91,7 @@ const ProgressOverview: React.FC<ProgressOverviewProps> = ({ habits, monthDays }
           </BarChart>
         </ResponsiveContainer>
       </div>
-    </div>
+    </>
   );
 };
 

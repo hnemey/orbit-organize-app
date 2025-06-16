@@ -23,6 +23,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
     notes: '',
     priority: 'medium' as Task['priority'],
     urgency: 'medium' as Task['urgency'],
+    estimatedHours: 0,
     estimatedMinutes: 30,
     projectId: '',
     scheduledDate: '',
@@ -32,12 +33,16 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
   useEffect(() => {
     if (task) {
+      const hours = Math.floor(task.estimatedMinutes / 60);
+      const minutes = task.estimatedMinutes % 60;
+      
       setFormData({
         name: task.name,
         notes: task.notes,
         priority: task.priority,
         urgency: task.urgency,
-        estimatedMinutes: task.estimatedMinutes,
+        estimatedHours: hours,
+        estimatedMinutes: minutes,
         projectId: task.projectId,
         scheduledDate: task.scheduledDate || '',
         scheduledTime: task.scheduledTime || '',
@@ -49,6 +54,7 @@ const TaskModal: React.FC<TaskModalProps> = ({
         notes: '',
         priority: 'medium',
         urgency: 'medium',
+        estimatedHours: 0,
         estimatedMinutes: 30,
         projectId: projects[0]?.id || '',
         scheduledDate: '',
@@ -62,27 +68,23 @@ const TaskModal: React.FC<TaskModalProps> = ({
     e.preventDefault();
     if (!formData.name.trim()) return;
 
+    const totalMinutes = formData.estimatedHours * 60 + formData.estimatedMinutes;
+
     onSave({
-      ...formData,
+      name: formData.name,
+      notes: formData.notes,
+      priority: formData.priority,
+      urgency: formData.urgency,
+      estimatedMinutes: totalMinutes,
+      projectId: formData.projectId,
       scheduledDate: formData.scheduledDate || undefined,
-      scheduledTime: formData.scheduledTime || undefined
+      scheduledTime: formData.scheduledTime || undefined,
+      completed: formData.completed
     });
     onClose();
   };
 
   if (!isOpen) return null;
-
-  const priorityColors = {
-    low: 'bg-green-600',
-    medium: 'bg-yellow-600',
-    high: 'bg-red-600'
-  };
-
-  const urgencyColors = {
-    low: 'bg-blue-600',
-    medium: 'bg-orange-600',
-    high: 'bg-purple-600'
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -168,15 +170,31 @@ const TaskModal: React.FC<TaskModalProps> = ({
 
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-1">
-              Estimated Duration (minutes)
+              Estimated Duration
             </label>
-            <input
-              type="number"
-              value={formData.estimatedMinutes}
-              onChange={(e) => setFormData({ ...formData, estimatedMinutes: parseInt(e.target.value) || 0 })}
-              className="w-full bg-gray-700 text-white border border-gray-600 rounded px-3 py-2"
-              min="1"
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Hours</label>
+                <input
+                  type="number"
+                  value={formData.estimatedHours}
+                  onChange={(e) => setFormData({ ...formData, estimatedHours: parseInt(e.target.value) || 0 })}
+                  className="w-full bg-gray-700 text-white border border-gray-600 rounded px-3 py-2"
+                  min="0"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Minutes</label>
+                <input
+                  type="number"
+                  value={formData.estimatedMinutes}
+                  onChange={(e) => setFormData({ ...formData, estimatedMinutes: parseInt(e.target.value) || 0 })}
+                  className="w-full bg-gray-700 text-white border border-gray-600 rounded px-3 py-2"
+                  min="0"
+                  max="59"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
