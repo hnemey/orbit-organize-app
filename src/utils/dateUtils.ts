@@ -1,4 +1,3 @@
-
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, parseISO, isAfter, isBefore, addDays, startOfWeek, endOfWeek } from 'date-fns';
 
 export const formatDate = (date: Date): string => {
@@ -55,4 +54,28 @@ export const isTaskDueThisWeek = (scheduledDate?: string): boolean => {
   const taskDate = parseISO(scheduledDate);
   const weekEnd = addDays(new Date(), 7);
   return !isAfter(taskDate, weekEnd);
+};
+
+export const filterTasks = (tasks: Task[], filter: TaskFilter): Task[] => {
+  const now = new Date();
+  const today = formatDate(now);
+  const weekEnd = formatDate(addDays(now, 7));
+  const monthEnd = formatDate(addDays(now, 30));
+
+  switch (filter) {
+    case 'today':
+      return tasks.filter(task => task.scheduledDate === today);
+    case 'week':
+      return tasks.filter(task => 
+        task.scheduledDate && task.scheduledDate <= weekEnd
+      );
+    case 'month':
+      return tasks.filter(task => 
+        task.scheduledDate && task.scheduledDate <= monthEnd
+      );
+    case 'no-date':
+      return tasks.filter(task => !task.scheduledDate);
+    default:
+      return tasks;
+  }
 };

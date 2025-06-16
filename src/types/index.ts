@@ -17,6 +17,7 @@ export interface Task {
   projectId: string;
   scheduledDate?: string; // YYYY-MM-DD format
   scheduledTime?: string; // HH:MM format
+  createdAt: string;
 }
 
 export interface Project {
@@ -24,6 +25,8 @@ export interface Project {
   name: string;
   color: string; // hex color code
   notes?: string;
+  description?: string;
+  createdAt: string;
 }
 
 export type TabType = 'dashboard' | 'habits' | 'projects' | 'calendar';

@@ -4,10 +4,11 @@ import { Task, Project } from '../types';
 import { formatDate, formatTime } from '../utils/dateUtils';
 
 interface TaskModalProps {
+  task?: Task;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (task: Omit<Task, 'id'>) => void;
-  task?: Task;
+  onSave: (updates: Partial<Task>) => void;
+  onDelete?: () => void;
   projects: Project[];
 }
 

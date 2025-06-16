@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Task, Project } from '../../types';
 import TaskList from './TaskList';
@@ -127,6 +126,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
       {/* Tasks */}
       <TaskList
         tasks={tasks}
+        projectColor={project.color}
         onEditTask={onEditTask}
         onDeleteTask={onDeleteTask}
         onToggleTask={onToggleTask}
