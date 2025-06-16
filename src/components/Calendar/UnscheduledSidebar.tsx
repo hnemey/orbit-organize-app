@@ -39,14 +39,14 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
   };
 
   return (
-    <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 h-full flex flex-col">
-      <div className="p-4 border-b border-gray-600">
-        <h3 className="text-lg font-semibold text-white mb-3">Unscheduled Tasks</h3>
+    <div className="bg-gray-900 rounded-lg shadow-sm border border-gray-700 h-[1200px] flex flex-col">
+      <div className="p-6 border-b border-gray-600">
+        <h3 className="text-xl font-semibold text-white mb-4">Unscheduled Tasks</h3>
         
         <select
           value={selectedProject}
           onChange={(e) => onProjectChange(e.target.value)}
-          className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-3 text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="all">All Projects</option>
           {projects.map(project => (
@@ -57,22 +57,22 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
         </select>
       </div>
 
-      <div className="p-4 flex-1 overflow-y-auto">
-        <div className="space-y-3">
+      <div className="p-6 flex-1 overflow-y-auto">
+        <div className="space-y-4">
           {tasks.map(task => (
             <div
               key={task.id}
               draggable
               onDragStart={(e) => handleDragStart(e, task)}
-              className="p-3 rounded-lg border border-gray-600 cursor-move hover:border-gray-500 hover:shadow-sm transition-all bg-gray-700"
+              className="p-4 rounded-lg border border-gray-600 cursor-move hover:border-gray-500 hover:shadow-sm transition-all bg-gray-700"
             >
-              <div className="font-medium text-white text-sm mb-2">
+              <div className="font-medium text-white text-base mb-3">
                 {task.name}
               </div>
-              <div className="text-sm text-gray-300 mb-2">
+              <div className="text-base text-gray-300 mb-3">
                 {getProjectName(task.projectId)}
               </div>
-              <div className="flex items-center gap-2 text-xs">
+              <div className="flex items-center gap-2 text-sm">
                 <span className={`font-medium ${getPriorityColor(task.priority)}`}>
                   P Priority
                 </span>
@@ -85,10 +85,10 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
           ))}
 
           {tasks.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
-              <div className="text-4xl mb-2">📅</div>
-              <p className="font-medium">No unscheduled tasks</p>
-              <p className="text-xs mt-1">
+            <div className="text-center py-12 text-gray-400">
+              <div className="text-5xl mb-3">📅</div>
+              <p className="font-medium text-lg">No unscheduled tasks</p>
+              <p className="text-sm mt-2">
                 {selectedProject === 'all' 
                   ? 'All tasks have been scheduled'
                   : 'No unscheduled tasks for this project'

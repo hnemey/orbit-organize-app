@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
@@ -54,16 +55,16 @@ const WeekView: React.FC<WeekViewProps> = ({
   });
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px]">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px]">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
-        <div className="p-5 border-r border-gray-600">
-          <div className="text-base font-medium text-gray-300">Time</div>
+        <div className="p-6 border-r border-gray-600">
+          <div className="text-lg font-medium text-gray-300">Time</div>
         </div>
         {weekDays.map(day => (
-          <div key={format(day, 'yyyy-MM-dd')} className="p-5 text-center border-r last:border-r-0 border-gray-600">
-            <div className="text-base font-medium text-gray-300">{format(day, 'EEE')}</div>
-            <div className={`text-xl font-semibold mt-2 ${
+          <div key={format(day, 'yyyy-MM-dd')} className="p-6 text-center border-r last:border-r-0 border-gray-600">
+            <div className="text-lg font-medium text-gray-300">{format(day, 'EEE')}</div>
+            <div className={`text-2xl font-semibold mt-3 ${
               isToday(day) ? 'text-blue-400' : 'text-white'
             }`}>
               {format(day, 'd')}
@@ -77,7 +78,7 @@ const WeekView: React.FC<WeekViewProps> = ({
         {timeSlots.map((slot, index) => (
           <div key={index} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700">
             {/* Time column */}
-            <div className="p-3 border-r border-gray-600 text-base text-gray-300 font-medium">
+            <div className="p-4 border-r border-gray-600 text-lg text-gray-300 font-medium">
               {slot.displayTime}
             </div>
             
@@ -92,17 +93,17 @@ const WeekView: React.FC<WeekViewProps> = ({
               return (
                 <div
                   key={format(date, 'yyyy-MM-dd')}
-                  className={`border-r border-gray-600 last:border-r-0 p-2 min-h-12 ${
+                  className={`border-r border-gray-600 last:border-r-0 p-3 min-h-16 ${
                     isCurrentDay ? 'bg-gray-700' : 'bg-gray-800'
                   }`}
                   onDrop={(e) => handleDrop(e, date)}
                   onDragOver={handleDragOver}
                 >
-                  <div className="space-y-1">
+                  <div className="space-y-2">
                     {dayTasks.slice(0, 3).map(task => (
                       <div
                         key={task.id}
-                        className="text-sm p-2 rounded text-white truncate cursor-pointer"
+                        className="text-sm p-3 rounded text-white truncate cursor-pointer"
                         style={{ backgroundColor: getProjectColor(task.projectId) }}
                         title={task.name}
                         draggable

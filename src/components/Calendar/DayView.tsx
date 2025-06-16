@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Task, Project } from '../../types';
 import { format, isToday } from 'date-fns';
@@ -48,20 +49,20 @@ const DayView: React.FC<DayViewProps> = ({
   });
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px]">
+    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px]">
       {/* Header with day and date */}
-      <div className="bg-gray-700 px-8 py-6 border-b border-gray-600">
+      <div className="bg-gray-700 px-10 py-8 border-b border-gray-600">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-medium text-white">
+            <h2 className="text-2xl font-medium text-white">
               {format(currentDate, 'EEEE, MMMM d, yyyy')}
             </h2>
           </div>
           <div className="text-right">
-            <div className="text-base text-gray-400 uppercase tracking-wide">
+            <div className="text-lg text-gray-400 uppercase tracking-wide">
               {format(currentDate, 'EEE')}
             </div>
-            <div className={`text-3xl font-bold ${isToday(currentDate) ? 'text-blue-400' : 'text-white'}`}>
+            <div className={`text-4xl font-bold ${isToday(currentDate) ? 'text-blue-400' : 'text-white'}`}>
               {format(currentDate, 'd')}
             </div>
           </div>
@@ -69,8 +70,8 @@ const DayView: React.FC<DayViewProps> = ({
       </div>
 
       {/* Time column header */}
-      <div className="bg-gray-700 px-8 py-4 border-b border-gray-600">
-        <h3 className="text-base font-medium text-gray-300">Time</h3>
+      <div className="bg-gray-700 px-10 py-6 border-b border-gray-600">
+        <h3 className="text-lg font-medium text-gray-300">Time</h3>
       </div>
 
       {/* Time grid */}
@@ -88,16 +89,16 @@ const DayView: React.FC<DayViewProps> = ({
           return (
             <div key={index} className="flex border-b border-gray-600 hover:bg-gray-700">
               {/* Time column */}
-              <div className="w-24 px-6 py-3 text-base text-gray-300 font-medium border-r border-gray-600">
+              <div className="w-32 px-8 py-4 text-lg text-gray-300 font-medium border-r border-gray-600">
                 {slot.displayTime}
               </div>
               
               {/* Task area */}
-              <div className="flex-1 px-6 py-3 min-h-12">
+              <div className="flex-1 px-8 py-4 min-h-16">
                 {tasksAtTime.map(task => (
                   <div
                     key={task.id}
-                    className="inline-flex items-center px-4 py-2 rounded-full text-base font-medium text-white mb-2 mr-3 cursor-pointer"
+                    className="inline-flex items-center px-5 py-3 rounded-full text-lg font-medium text-white mb-3 mr-4 cursor-pointer"
                     style={{ backgroundColor: getProjectColor(task.projectId) }}
                     title={`${task.name} - ${task.estimatedMinutes} minutes`}
                     draggable
