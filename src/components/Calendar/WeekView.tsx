@@ -40,9 +40,9 @@ const WeekView: React.FC<WeekViewProps> = ({
     e.preventDefault();
   };
 
-  // Generate 30-minute time slots from 6:00 AM to 6:00 PM (12 hours)
-  const timeSlots = Array.from({ length: 24 }, (_, i) => {
-    const hour = Math.floor(i / 2) + 6; // Start at 6 AM
+  // Generate 30-minute time slots for full 24 hours (12:00 AM to 11:30 PM)
+  const timeSlots = Array.from({ length: 48 }, (_, i) => {
+    const hour = Math.floor(i / 2);
     const minute = (i % 2) * 30;
     const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
     
@@ -55,7 +55,7 @@ const WeekView: React.FC<WeekViewProps> = ({
   });
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px]">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1800px]">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
         <div className="p-6 border-r border-gray-600">

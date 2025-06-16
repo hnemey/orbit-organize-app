@@ -34,9 +34,9 @@ const DayView: React.FC<DayViewProps> = ({
     e.preventDefault();
   };
 
-  // Generate 30-minute time slots from 6:00 AM to 6:00 PM (12 hours)
-  const timeSlots = Array.from({ length: 24 }, (_, i) => {
-    const hour = Math.floor(i / 2) + 6; // Start at 6 AM
+  // Generate 30-minute time slots for full 24 hours (12:00 AM to 11:30 PM)
+  const timeSlots = Array.from({ length: 48 }, (_, i) => {
+    const hour = Math.floor(i / 2);
     const minute = (i % 2) * 30;
     const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
     
@@ -49,7 +49,7 @@ const DayView: React.FC<DayViewProps> = ({
   });
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px]">
+    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1800px]">
       {/* Header with day and date */}
       <div className="bg-gray-700 px-10 py-8 border-b border-gray-600">
         <div className="flex items-center justify-between">
