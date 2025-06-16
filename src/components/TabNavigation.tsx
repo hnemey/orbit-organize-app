@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { TabType } from '../types';
 import SettingsDropdown from './Settings/SettingsDropdown';
@@ -19,7 +20,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange })
   ];
 
   return (
-    <nav className="bg-card border-b border-border w-full transition-colors duration-300">
+    <nav className="bg-gray-800 dark:bg-gray-900 border-b border-gray-700 dark:border-gray-600 w-full">
       <div className="w-full px-4">
         <div className="flex justify-between items-center">
           <div className="flex space-x-1">
@@ -27,10 +28,10 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange })
               <button
                 key={tab.key}
                 onClick={() => onTabChange(tab.key)}
-                className={`px-6 py-4 text-sm font-medium transition-all duration-200 ${
+                className={`px-6 py-4 text-sm font-medium transition-colors ${
                   activeTab === tab.key
-                    ? 'bg-accent text-foreground border-b-2 border-primary'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                    ? 'bg-gray-700 dark:bg-gray-800 text-white border-b-2 border-blue-500'
+                    : 'text-gray-300 hover:text-white hover:bg-gray-700 dark:hover:bg-gray-800'
                 }`}
               >
                 {tab.label}
