@@ -119,43 +119,45 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-black min-h-screen">
-      <CalendarHeader
-        currentDate={currentDate}
-        view={view}
-        onViewChange={setView}
-        onNavigate={navigateDate}
-        onToday={goToToday}
-      />
+    <div className="max-w-7xl mx-auto bg-black min-h-screen">
+      <div className="px-4 py-8">
+        <CalendarHeader
+          currentDate={currentDate}
+          view={view}
+          onViewChange={setView}
+          onNavigate={navigateDate}
+          onToday={goToToday}
+        />
 
-      <div className="flex gap-6 h-full">
-        {/* Show unscheduled sidebar for day and week views */}
-        {(view === 'day' || view === 'week') && (
-          <div className="w-80 h-full">
-            <UnscheduledSidebar
-              tasks={getUnscheduledTasks()}
-              projects={projects}
-              selectedProject={selectedProject}
-              onProjectChange={setSelectedProject}
-            />
+        <div className="flex gap-6 h-full">
+          {/* Show unscheduled sidebar for day and week views */}
+          {(view === 'day' || view === 'week') && (
+            <div className="w-80 h-full">
+              <UnscheduledSidebar
+                tasks={getUnscheduledTasks()}
+                projects={projects}
+                selectedProject={selectedProject}
+                onProjectChange={setSelectedProject}
+              />
+            </div>
+          )}
+
+          <div className="flex-1">
+            {renderCalendarView()}
           </div>
-        )}
 
-        <div className="flex-1">
-          {renderCalendarView()}
+          {/* Show unscheduled sidebar for month and year views on the right */}
+          {(view === 'month' || view === 'year') && (
+            <div className="w-80 h-full">
+              <UnscheduledSidebar
+                tasks={getUnscheduledTasks()}
+                projects={projects}
+                selectedProject={selectedProject}
+                onProjectChange={setSelectedProject}
+              />
+            </div>
+          )}
         </div>
-
-        {/* Show unscheduled sidebar for month and year views on the right */}
-        {(view === 'month' || view === 'year') && (
-          <div className="w-80 h-full">
-            <UnscheduledSidebar
-              tasks={getUnscheduledTasks()}
-              projects={projects}
-              selectedProject={selectedProject}
-              onProjectChange={setSelectedProject}
-            />
-          </div>
-        )}
       </div>
     </div>
   );
