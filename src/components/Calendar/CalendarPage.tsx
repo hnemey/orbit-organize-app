@@ -62,7 +62,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksCha
   const adjustTimeWindow = (direction: 'up' | 'down') => {
     setTimeWindowStart(prev => {
       const newStart = direction === 'up' ? prev - 2 : prev + 2;
-      return Math.max(0, Math.min(18, newStart)); // 0 AM to 6 PM (so we can show until midnight)
+      return Math.max(0, Math.min(12, newStart)); // 0 AM to 12 PM (so we can show 12 hours from there)
     });
   };
 

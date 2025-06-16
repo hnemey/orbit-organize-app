@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { TaskFilter } from '../../types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 interface ProjectSidebarProps {
   filter: TaskFilter;
@@ -20,28 +21,21 @@ const ProjectSidebar: React.FC<ProjectSidebarProps> = ({ filter, onFilterChange 
     <div className="bg-gray-800 rounded-lg p-6">
       <h3 className="text-lg font-semibold text-white mb-4">Filter Tasks</h3>
       
-      <div className="space-y-2">
-        {filterOptions.map(option => (
-          <label key={option.value} className="flex items-start gap-3 cursor-pointer group">
-            <input
-              type="radio"
-              name="taskFilter"
-              value={option.value}
-              checked={filter === option.value}
-              onChange={(e) => onFilterChange(e.target.value as TaskFilter)}
-              className="mt-1 w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 focus:ring-blue-500 focus:ring-2"
-            />
-            <div>
-              <div className="text-white group-hover:text-blue-400 transition-colors">
-                {option.label}
+      <Select value={filter} onValueChange={(value: TaskFilter) => onFilterChange(value)}>
+        <SelectTrigger className="w-full bg-gray-700 border-gray-600 text-white">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent className="bg-gray-700 border-gray-600">
+          {filterOptions.map(option => (
+            <SelectItem key={option.value} value={option.value} className="text-white hover:bg-gray-600">
+              <div>
+                <div className="font-medium">{option.label}</div>
+                <div className="text-xs text-gray-400">{option.description}</div>
               </div>
-              <div className="text-xs text-gray-400">
-                {option.description}
-              </div>
-            </div>
-          </label>
-        ))}
-      </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 };

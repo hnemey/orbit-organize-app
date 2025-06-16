@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { Habit } from '../../types';
 import { formatDate } from '../../utils/dateUtils';
 
@@ -30,6 +30,19 @@ const ProgressOverview: React.FC<ProgressOverviewProps> = ({ habits, monthDays }
     return weeks;
   };
 
+  const calculateDailyProgress = () => {
+    return monthDays.filter(day => day <= new Date()).map(day => {
+      const dateStr = formatDate(day);
+      const completedHabits = habits.filter(habit => habit.completions[dateStr]);
+      const percentage = habits.length > 0 ? (completedHabits.length / habits.length) * 100 : 0;
+      
+      return {
+        day: day.getDate(),
+        percentage: Math.round(percentage)
+      };
+    });
+  };
+
   const calculateOverallProgress = () => {
     const pastDays = monthDays.filter(day => day <= new Date());
     if (pastDays.length === 0 || habits.length === 0) return 0;
@@ -44,10 +57,29 @@ const ProgressOverview: React.FC<ProgressOverviewProps> = ({ habits, monthDays }
   };
 
   const weeklyData = calculateWeeklyProgress();
+  const dailyData = calculateDailyProgress();
   const overallProgress = calculateOverallProgress();
 
   return (
     <>
+      {/* Daily Progress Line Chart */}
+      <div className="bg-gray-800 rounded-lg p-6">
+        <h3 className="text-lg font-semibold text-white mb-4">Daily Progress</h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={dailyData}>
+            <XAxis dataKey="day" stroke="#9CA3AF" />
+            <YAxis stroke="#9CA3AF" domain={[0, 100]} />
+            <Line 
+              type="monotone" 
+              dataKey="percentage" 
+              stroke="#3B82F6" 
+              strokeWidth={2}
+              dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
       {/* Overall Progress Circle */}
       <div className="bg-gray-800 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-white mb-4">Overall Progress</h3>

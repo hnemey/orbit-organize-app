@@ -74,12 +74,19 @@ const HabitsPage: React.FC<HabitsPageProps> = ({ habits, onHabitsChange }) => {
         onYearChange={setSelectedYear}
       />
 
-      {/* Row 1: Overall and Weekly Progress */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <ProgressOverview habits={monthHabits} monthDays={monthDays} />
+      {/* Row 1: Daily Progress Line Chart */}
+      <div className="grid grid-cols-1 mb-6">
+        <div className="bg-gray-800 rounded-lg p-6">
+          <ProgressOverview habits={monthHabits} monthDays={monthDays} />
+        </div>
       </div>
 
-      {/* Row 2: Daily Progress and Habits Grid */}
+      {/* Row 2: Overall and Weekly Progress */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Overall and Weekly charts are now rendered inside ProgressOverview component */}
+      </div>
+
+      {/* Row 3: Daily Progress and Habits Grid */}
       <HabitsGrid
         habits={monthHabits}
         monthDays={monthDays}

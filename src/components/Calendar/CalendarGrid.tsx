@@ -28,10 +28,10 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   const getTimeSlots = () => {
     const slots = [];
-    for (let i = 0; i < 6; i++) {
-      const hour = timeWindowStart + i;
-      slots.push(`${hour.toString().padStart(2, '0')}:00`);
-      slots.push(`${hour.toString().padStart(2, '0')}:30`);
+    const endHour = Math.min(timeWindowStart + 12, 24);
+    for (let i = timeWindowStart; i < endHour; i++) {
+      slots.push(`${i.toString().padStart(2, '0')}:00`);
+      slots.push(`${i.toString().padStart(2, '0')}:30`);
     }
     return slots;
   };
