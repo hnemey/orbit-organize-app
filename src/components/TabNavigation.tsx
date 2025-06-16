@@ -30,7 +30,7 @@ const TabNavigation: React.FC<TabNavigationProps> = ({ activeTab, onTabChange })
               }`}
             >
               {tab.label}
-            </a>
+            </button>
           ))}
         </div>
       </div>
