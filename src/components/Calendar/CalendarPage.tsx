@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Task, Project } from '../../types';
 import CalendarHeader from './CalendarHeader';
@@ -7,6 +8,7 @@ import WeekView from './WeekView';
 import DayView from './DayView';
 import YearView from './YearView';
 import TaskModal from '../TaskModal';
+import { addMonths, subMonths, addWeeks, subWeeks, addDays, subDays, addYears, subYears } from 'date-fns';
 
 interface CalendarPageProps {
   tasks: Task[];
@@ -23,6 +25,45 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
   const [view, setView] = useState<'month' | 'week' | 'day' | 'year'>('month');
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>();
+  const [selectedProject, setSelectedProject] = useState('all');
+
+  const handleNavigate = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      switch (view) {
+        case 'month':
+          setCurrentDate(subMonths(currentDate, 1));
+          break;
+        case 'week':
+          setCurrentDate(subWeeks(currentDate, 1));
+          break;
+        case 'day':
+          setCurrentDate(subDays(currentDate, 1));
+          break;
+        case 'year':
+          setCurrentDate(subYears(currentDate, 1));
+          break;
+      }
+    } else {
+      switch (view) {
+        case 'month':
+          setCurrentDate(addMonths(currentDate, 1));
+          break;
+        case 'week':
+          setCurrentDate(addWeeks(currentDate, 1));
+          break;
+        case 'day':
+          setCurrentDate(addDays(currentDate, 1));
+          break;
+        case 'year':
+          setCurrentDate(addYears(currentDate, 1));
+          break;
+      }
+    }
+  };
+
+  const handleToday = () => {
+    setCurrentDate(new Date());
+  };
 
   const handleTaskMove = (taskId: string, newDate: string, newTime?: string) => {
     const updatedTasks = tasks.map(task => {
@@ -31,6 +72,20 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
           ...task,
           scheduledDate: newDate,
           scheduledTime: newTime || task.scheduledTime
+        };
+      }
+      return task;
+    });
+    onTasksChange(updatedTasks);
+  };
+
+  const handleTaskUnschedule = (taskId: string) => {
+    const updatedTasks = tasks.map(task => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          scheduledDate: undefined,
+          scheduledTime: undefined
         };
       }
       return task;
@@ -73,19 +128,21 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
     }
   };
 
-  const handleToggleTask = (taskId: string) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId ? { ...task, completed: !task.completed } : task
-    );
-    onTasksChange(updatedTasks);
-  };
-
   const handleTaskClick = (task: Task) => {
     setEditingTask(task);
     setIsTaskModalOpen(true);
   };
 
+  const handleMonthClick = (monthIndex: number) => {
+    const newDate = new Date(currentDate.getFullYear(), monthIndex, 1);
+    setCurrentDate(newDate);
+    setView('month');
+  };
+
   const unscheduledTasks = tasks.filter(task => !task.scheduledDate);
+  const filteredUnscheduledTasks = selectedProject === 'all' 
+    ? unscheduledTasks 
+    : unscheduledTasks.filter(task => task.projectId === selectedProject);
 
   const renderCalendarView = () => {
     const commonProps = {
@@ -104,7 +161,12 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
       case 'day':
         return <DayView {...commonProps} />;
       case 'year':
-        return <YearView currentDate={currentDate} />;
+        return <YearView 
+          currentDate={currentDate} 
+          tasks={tasks}
+          projects={projects}
+          onMonthClick={handleMonthClick}
+        />;
       default:
         return <MonthView {...commonProps} />;
     }
@@ -114,18 +176,19 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
     <div className="max-w-7xl mx-auto px-4 py-8">
       <CalendarHeader
         currentDate={currentDate}
-        onDateChange={setCurrentDate}
         view={view}
         onViewChange={setView}
+        onNavigate={handleNavigate}
+        onToday={handleToday}
       />
 
       <div className="flex gap-6 mt-6">
         <UnscheduledSidebar
-          tasks={unscheduledTasks}
+          tasks={filteredUnscheduledTasks}
           projects={projects}
-          onToggleTask={handleToggleTask}
-          onTaskClick={handleTaskClick}
-          onAddTask={() => setIsTaskModalOpen(true)}
+          selectedProject={selectedProject}
+          onProjectChange={setSelectedProject}
+          onTaskUnschedule={handleTaskUnschedule}
         />
 
         {renderCalendarView()}

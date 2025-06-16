@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
@@ -25,7 +26,7 @@ const WeekView: React.FC<WeekViewProps> = ({
   useEffect(() => {
     if (scrollContainerRef.current) {
       const sixAmSlot = 12 * 2;
-      const slotHeight = 32;
+      const slotHeight = 24;
       scrollContainerRef.current.scrollTop = sixAmSlot * slotHeight;
     }
   }, []);
@@ -58,23 +59,23 @@ const WeekView: React.FC<WeekViewProps> = ({
     const startSlot = startHour * 2 + (startMinute >= 30 ? 1 : 0);
     
     const durationSlots = Math.ceil(task.estimatedMinutes / 30);
-    const height = durationSlots * 32; // 32px per slot
-    const top = startSlot * 32;
+    const height = durationSlots * 24; // 24px per slot
+    const top = startSlot * 24;
     
     return { top, height };
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px] flex flex-col">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
-        <div className="p-4 border-r border-gray-600">
-          <div className="text-sm font-medium text-gray-300">Time</div>
+        <div className="p-3 border-r border-gray-600">
+          <div className="text-xs font-medium text-gray-300">Time</div>
         </div>
         {weekDays.map(day => (
-          <div key={format(day, 'yyyy-MM-dd')} className="p-4 text-center border-r last:border-r-0 border-gray-600">
-            <div className="text-sm font-medium text-gray-300">{format(day, 'EEE')}</div>
-            <div className={`text-lg font-semibold mt-1 ${
+          <div key={format(day, 'yyyy-MM-dd')} className="p-3 text-center border-r last:border-r-0 border-gray-600">
+            <div className="text-xs font-medium text-gray-300">{format(day, 'EEE')}</div>
+            <div className={`text-sm font-semibold mt-1 ${
               isToday(day) ? 'text-blue-400' : 'text-white'
             }`}>
               {format(day, 'd')}
@@ -99,7 +100,7 @@ const WeekView: React.FC<WeekViewProps> = ({
           const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
 
           return (
-            <div key={i} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700 h-8">
+            <div key={i} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700 h-6">
               <div className="p-1 border-r border-gray-600 text-xs text-gray-300 font-medium flex items-center">
                 {displayTime}
               </div>
@@ -138,7 +139,7 @@ const WeekView: React.FC<WeekViewProps> = ({
                   borderLeftColor: getProjectColor(task.projectId),
                   top: `${top}px`,
                   height: `${height}px`,
-                  minHeight: '32px',
+                  minHeight: '24px',
                   left: leftOffset,
                   width: columnWidth,
                   marginLeft: '2px',

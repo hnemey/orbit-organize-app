@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, isToday } from 'date-fns';
@@ -25,7 +26,7 @@ const DayView: React.FC<DayViewProps> = ({
   useEffect(() => {
     if (scrollContainerRef.current) {
       const sixAmSlot = 12 * 2;
-      const slotHeight = 32;
+      const slotHeight = 24;
       scrollContainerRef.current.scrollTop = sixAmSlot * slotHeight;
     }
   }, []);
@@ -52,27 +53,27 @@ const DayView: React.FC<DayViewProps> = ({
     const startSlot = startHour * 2 + (startMinute >= 30 ? 1 : 0);
     
     const durationSlots = Math.ceil(task.estimatedMinutes / 30);
-    const height = durationSlots * 32; // 32px per slot
-    const top = startSlot * 32;
+    const height = durationSlots * 24; // 24px per slot
+    const top = startSlot * 24;
     
     return { top, height };
   };
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
+    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px] flex flex-col">
       {/* Header with day and date */}
-      <div className="bg-gray-700 px-6 py-4 border-b border-gray-600">
+      <div className="bg-gray-700 px-4 py-3 border-b border-gray-600">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-medium text-white">
+            <h2 className="text-lg font-medium text-white">
               {format(currentDate, 'EEEE, MMMM d, yyyy')}
             </h2>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-400 uppercase tracking-wide">
+            <div className="text-xs text-gray-400 uppercase tracking-wide">
               {format(currentDate, 'EEE')}
             </div>
-            <div className={`text-2xl font-bold ${isToday(currentDate) ? 'text-blue-400' : 'text-white'}`}>
+            <div className={`text-xl font-bold ${isToday(currentDate) ? 'text-blue-400' : 'text-white'}`}>
               {format(currentDate, 'd')}
             </div>
           </div>
@@ -80,8 +81,8 @@ const DayView: React.FC<DayViewProps> = ({
       </div>
 
       {/* Time column header */}
-      <div className="bg-gray-700 px-6 py-3 border-b border-gray-600">
-        <h3 className="text-sm font-medium text-gray-300">Time</h3>
+      <div className="bg-gray-700 px-4 py-2 border-b border-gray-600">
+        <h3 className="text-xs font-medium text-gray-300">Time</h3>
       </div>
 
       {/* Time grid - scrollable through all 24 hours */}
@@ -100,12 +101,12 @@ const DayView: React.FC<DayViewProps> = ({
           const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
 
           return (
-            <div key={i} className="flex border-b border-gray-600 hover:bg-gray-700 h-8">
-              <div className="w-24 px-3 py-1 text-xs text-gray-300 font-medium border-r border-gray-600 flex items-center">
+            <div key={i} className="flex border-b border-gray-600 hover:bg-gray-700 h-6">
+              <div className="w-20 px-2 py-1 text-xs text-gray-300 font-medium border-r border-gray-600 flex items-center">
                 {displayTime}
               </div>
               <div 
-                className="flex-1 px-3 py-1"
+                className="flex-1 px-2 py-1"
                 onDrop={(e) => handleDrop(e, time24)}
                 onDragOver={handleDragOver}
               />
@@ -119,13 +120,13 @@ const DayView: React.FC<DayViewProps> = ({
           return (
             <div
               key={task.id}
-              className="absolute left-24 right-0 mx-3 px-2 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-4 flex items-center hover:opacity-80 transition-opacity"
+              className="absolute left-20 right-0 mx-2 px-2 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-4 flex items-center hover:opacity-80 transition-opacity"
               style={{ 
                 backgroundColor: getProjectColor(task.projectId),
                 borderLeftColor: getProjectColor(task.projectId),
                 top: `${top}px`,
                 height: `${height}px`,
-                minHeight: '32px'
+                minHeight: '24px'
               }}
               title={`${task.name} - ${task.estimatedMinutes} minutes`}
               draggable
