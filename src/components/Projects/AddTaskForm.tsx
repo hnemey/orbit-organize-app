@@ -1,38 +1,43 @@
-
 import React, { useState } from 'react';
 import { Task } from '../../types';
 
 interface AddTaskFormProps {
   projectId: string;
-  onAdd: (taskData: Omit<Task, 'id'>) => void;
+  onAdd: (task: Omit<Task, 'id'>) => void;
   onCancel: () => void;
 }
 
 const AddTaskForm: React.FC<AddTaskFormProps> = ({ projectId, onAdd, onCancel }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    notes: '',
-    priority: 'medium' as Task['priority'],
-    urgency: 'medium' as Task['urgency'],
-    estimatedMinutes: 30,
-    scheduledDate: '',
-    scheduledTime: ''
-  });
+  const [name, setName] = useState('');
+  const [notes, setNotes] = useState('');
+  const [priority, setPriority] = useState('medium' as Task['priority']);
+  const [urgency, setUrgency] = useState('medium' as Task['urgency']);
+  const [estimatedMinutes, setEstimatedMinutes] = useState(30);
+  const [scheduledDate, setScheduledDate] = useState('');
+  const [scheduledTime, setScheduledTime] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name.trim()) {
+    if (name.trim()) {
       onAdd({
-        name: formData.name.trim(),
-        notes: formData.notes.trim(),
-        priority: formData.priority,
-        urgency: formData.urgency,
-        estimatedMinutes: formData.estimatedMinutes,
+        name: name.trim(),
+        notes,
+        priority,
+        urgency,
+        estimatedMinutes,
         completed: false,
         projectId,
-        scheduledDate: formData.scheduledDate || undefined,
-        scheduledTime: formData.scheduledTime || undefined
+        scheduledDate: scheduledDate || undefined,
+        scheduledTime: scheduledTime || undefined,
+        createdAt: new Date().toISOString()
       });
+      setName('');
+      setNotes('');
+      setPriority('medium' as Task['priority']);
+      setUrgency('medium' as Task['urgency']);
+      setEstimatedMinutes(30);
+      setScheduledDate('');
+      setScheduledTime('');
     }
   };
 
@@ -41,24 +46,24 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ projectId, onAdd, onCancel })
       <input
         type="text"
         placeholder="Task name..."
-        value={formData.name}
-        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         className="w-full bg-gray-600 text-white px-3 py-2 rounded"
         required
       />
 
       <textarea
         placeholder="Notes (optional)..."
-        value={formData.notes}
-        onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
         className="w-full bg-gray-600 text-white px-3 py-2 rounded resize-none"
         rows={2}
       />
 
       <div className="grid grid-cols-2 gap-3">
         <select
-          value={formData.priority}
-          onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value as Task['priority'] }))}
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as Task['priority'])}
           className="bg-gray-600 text-white px-3 py-2 rounded"
         >
           <option value="low">Low Priority</option>
@@ -67,8 +72,8 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ projectId, onAdd, onCancel })
         </select>
 
         <select
-          value={formData.urgency}
-          onChange={(e) => setFormData(prev => ({ ...prev, urgency: e.target.value as Task['urgency'] }))}
+          value={urgency}
+          onChange={(e) => setUrgency(e.target.value as Task['urgency'])}
           className="bg-gray-600 text-white px-3 py-2 rounded"
         >
           <option value="low">Low Urgency</option>
@@ -81,8 +86,8 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ projectId, onAdd, onCancel })
         <input
           type="number"
           placeholder="Minutes"
-          value={formData.estimatedMinutes}
-          onChange={(e) => setFormData(prev => ({ ...prev, estimatedMinutes: parseInt(e.target.value) || 30 }))}
+          value={estimatedMinutes}
+          onChange={(e) => setEstimatedMinutes(parseInt(e.target.value) || 30)}
           className="bg-gray-600 text-white px-3 py-2 rounded"
           min="5"
           step="5"
@@ -90,15 +95,15 @@ const AddTaskForm: React.FC<AddTaskFormProps> = ({ projectId, onAdd, onCancel })
 
         <input
           type="date"
-          value={formData.scheduledDate}
-          onChange={(e) => setFormData(prev => ({ ...prev, scheduledDate: e.target.value }))}
+          value={scheduledDate}
+          onChange={(e) => setScheduledDate(e.target.value)}
           className="bg-gray-600 text-white px-3 py-2 rounded"
         />
 
         <input
           type="time"
-          value={formData.scheduledTime}
-          onChange={(e) => setFormData(prev => ({ ...prev, scheduledTime: e.target.value }))}
+          value={scheduledTime}
+          onChange={(e) => setScheduledTime(e.target.value)}
           className="bg-gray-600 text-white px-3 py-2 rounded"
         />
       </div>

@@ -1,19 +1,16 @@
-
 import React, { useState } from 'react';
 import { Project } from '../../types';
 
 interface AddProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (projectData: Omit<Project, 'id'>) => void;
+  onAdd: (project: Omit<Project, 'id'>) => void;
 }
 
 const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onAdd }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    color: '#3B82F6',
-    notes: ''
-  });
+  const [name, setName] = useState('');
+  const [color, setColor] = useState('#3B82F6');
+  const [notes, setNotes] = useState('');
 
   const predefinedColors = [
     '#3B82F6', // Blue
@@ -28,13 +25,16 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onAd
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.name.trim()) {
+    if (name.trim()) {
       onAdd({
-        name: formData.name.trim(),
-        color: formData.color,
-        notes: formData.notes.trim() || undefined
+        name: name.trim(),
+        color,
+        notes,
+        createdAt: new Date().toISOString()
       });
-      setFormData({ name: '', color: '#3B82F6', notes: '' });
+      setName('');
+      setColor('#3B82F6');
+      setNotes('');
       onClose();
     }
   };
@@ -53,8 +53,8 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onAd
             </label>
             <input
               type="text"
-              value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500"
               placeholder="Enter project name..."
               autoFocus
@@ -70,9 +70,9 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onAd
                 <button
                   key={color}
                   type="button"
-                  onClick={() => setFormData(prev => ({ ...prev, color }))}
+                  onClick={() => setColor(color)}
                   className={`w-8 h-8 rounded-full border-2 transition-all ${
-                    formData.color === color ? 'border-white scale-110' : 'border-gray-600'
+                    color === color ? 'border-white scale-110' : 'border-gray-600'
                   }`}
                   style={{ backgroundColor: color }}
                 />
@@ -85,8 +85,8 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onAd
               Notes (Optional)
             </label>
             <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
               className="w-full bg-gray-700 text-white border border-gray-600 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 resize-none"
               placeholder="Project description..."
               rows={3}
@@ -103,7 +103,7 @@ const AddProjectModal: React.FC<AddProjectModalProps> = ({ isOpen, onClose, onAd
             </button>
             <button
               type="submit"
-              disabled={!formData.name.trim()}
+              disabled={!name.trim()}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white rounded-lg transition-colors"
             >
               Add Project

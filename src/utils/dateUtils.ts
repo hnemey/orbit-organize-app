@@ -1,4 +1,5 @@
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isToday, parseISO, isAfter, isBefore, addDays, startOfWeek, endOfWeek } from 'date-fns';
+import { Task, TaskFilter } from '../types';
 
 export const formatDate = (date: Date): string => {
   return format(date, 'yyyy-MM-dd');

@@ -5,8 +5,8 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CalendarHeaderProps {
   currentDate: Date;
-  view: 'week' | 'day';
-  onViewChange: (view: 'week' | 'day') => void;
+  view: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  onViewChange: (view: 'daily' | 'weekly' | 'monthly' | 'yearly') => void;
   onNavigate: (direction: 'prev' | 'next') => void;
   onGoToToday: () => void;
 }
@@ -18,6 +18,21 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onNavigate,
   onGoToToday
 }) => {
+  const getHeaderTitle = () => {
+    switch (view) {
+      case 'daily':
+        return format(currentDate, 'EEEE, MMMM d, yyyy');
+      case 'weekly':
+        return `${format(currentDate, 'MMM d')} - ${format(new Date(currentDate.getTime() + 6 * 24 * 60 * 60 * 1000), 'MMM d, yyyy')}`;
+      case 'monthly':
+        return format(currentDate, 'MMMM yyyy');
+      case 'yearly':
+        return format(currentDate, 'yyyy');
+      default:
+        return format(currentDate, 'MMMM yyyy');
+    }
+  };
+
   return (
     <div className="bg-gray-800 rounded-lg p-4 mb-6">
       <div className="flex items-center justify-between">
@@ -30,11 +45,8 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
               <ChevronLeft className="w-4 h-4" />
             </button>
             
-            <h2 className="text-xl font-semibold text-white min-w-48 text-center">
-              {view === 'week' 
-                ? `Week of ${format(currentDate, 'MMM d, yyyy')}`
-                : format(currentDate, 'EEEE, MMM d, yyyy')
-              }
+            <h2 className="text-xl font-semibold text-white min-w-64 text-center">
+              {getHeaderTitle()}
             </h2>
             
             <button
@@ -55,24 +67,44 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
 
         <div className="flex gap-2">
           <button
-            onClick={() => onViewChange('day')}
+            onClick={() => onViewChange('daily')}
             className={`px-3 py-1 text-sm rounded transition-colors ${
-              view === 'day'
+              view === 'daily'
                 ? 'bg-blue-600 text-white'
                 : 'text-gray-400 hover:text-white hover:bg-gray-700'
             }`}
           >
-            Day
+            Daily
           </button>
           <button
-            onClick={() => onViewChange('week')}
+            onClick={() => onViewChange('weekly')}
             className={`px-3 py-1 text-sm rounded transition-colors ${
-              view === 'week'
+              view === 'weekly'
                 ? 'bg-blue-600 text-white'
                 : 'text-gray-400 hover:text-white hover:bg-gray-700'
             }`}
           >
-            Week
+            Weekly
+          </button>
+          <button
+            onClick={() => onViewChange('monthly')}
+            className={`px-3 py-1 text-sm rounded transition-colors ${
+              view === 'monthly'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-400 hover:text-white hover:bg-gray-700'
+            }`}
+          >
+            Monthly
+          </button>
+          <button
+            onClick={() => onViewChange('yearly')}
+            className={`px-3 py-1 text-sm rounded transition-colors ${
+              view === 'yearly'
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-400 hover:text-white hover:bg-gray-700'
+            }`}
+          >
+            Yearly
           </button>
         </div>
       </div>
