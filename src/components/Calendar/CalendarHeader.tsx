@@ -19,7 +19,10 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onToday
 }) => {
   const getHeaderTitle = () => {
-    // Use consistent format for all views: "Month Year"
+    if (view === 'year') {
+      return format(currentDate, 'yyyy');
+    }
+    // Use "Month Year" format for Month, Week, and Day views
     return format(currentDate, 'MMMM yyyy');
   };
 
