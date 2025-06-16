@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { Project, Task } from '../../types';
 import ProjectSidebar from './ProjectSidebar';
 import ProjectGrid from './ProjectGrid';
 import TaskModal from '../TaskModal';
+import AddProjectModal from './AddProjectModal';
 
 interface ProjectsPageProps {
   projects: Project[];
@@ -21,13 +21,18 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>();
+  const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
 
   const handleProjectSelect = (projectId: string | null) => {
     setSelectedProject(projectId);
   };
 
-  const handleAddProject = (newProject: Project) => {
-    onProjectsChange([...projects, newProject]);
+  const handleAddProject = (newProject: Omit<Project, 'id'>) => {
+    const project: Project = {
+      ...newProject,
+      id: `project-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    };
+    onProjectsChange([...projects, project]);
   };
 
   const handleEditProject = (projectId: string, updates: Partial<Project>) => {
@@ -98,7 +103,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
         <ProjectSidebar
           selectedProject={selectedProject}
           onProjectSelect={handleProjectSelect}
-          onAddProject={() => {}}
+          onAddProject={() => setIsAddProjectModalOpen(true)}
         />
 
         <ProjectGrid
@@ -128,6 +133,15 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
           projects={projects}
         />
       )}
+
+      <AddProjectModal
+        isOpen={isAddProjectModalOpen}
+        onClose={() => setIsAddProjectModalOpen(false)}
+        onAdd={(projectData) => {
+          handleAddProject(projectData);
+          setIsAddProjectModalOpen(false);
+        }}
+      />
     </div>
   );
 };
