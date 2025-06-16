@@ -34,10 +34,18 @@ const DayView: React.FC<DayViewProps> = ({
     e.preventDefault();
   };
 
-  // Generate time slots from 00:00 to 23:00
-  const timeSlots = Array.from({ length: 24 }, (_, i) => {
-    const hour = i.toString().padStart(2, '0');
-    return `${hour}:00`;
+  // Generate 30-minute time slots from 12:00 AM to 11:30 PM
+  const timeSlots = Array.from({ length: 48 }, (_, i) => {
+    const hour = Math.floor(i / 2);
+    const minute = (i % 2) * 30;
+    const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+    
+    // Convert to 12-hour format for display
+    const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    const ampm = hour >= 12 ? 'PM' : 'AM';
+    const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
+    
+    return { time24, displayTime };
   });
 
   return (
@@ -72,21 +80,21 @@ const DayView: React.FC<DayViewProps> = ({
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
-        {timeSlots.map((timeSlot) => {
+        {timeSlots.map((slot, index) => {
           const tasksAtTime = dayTasks.filter(task => {
-            if (!task.scheduledTime) return timeSlot === '09:00'; // Default unscheduled tasks to 9 AM
-            return task.scheduledTime.startsWith(timeSlot.substring(0, 2));
+            if (!task.scheduledTime) return slot.time24 === '09:00'; // Default unscheduled tasks to 9 AM
+            return task.scheduledTime.startsWith(slot.time24.substring(0, 2));
           });
 
           return (
-            <div key={timeSlot} className="flex border-b border-gray-100 hover:bg-gray-50">
+            <div key={index} className="flex border-b border-gray-100 hover:bg-gray-50">
               {/* Time column */}
-              <div className="w-20 px-4 py-3 text-sm text-gray-500 font-medium border-r border-gray-100">
-                {timeSlot}
+              <div className="w-20 px-4 py-2 text-sm text-gray-500 font-medium border-r border-gray-100">
+                {slot.displayTime}
               </div>
               
               {/* Task area */}
-              <div className="flex-1 px-4 py-3 min-h-12">
+              <div className="flex-1 px-4 py-2 min-h-8">
                 {tasksAtTime.map(task => (
                   <div
                     key={task.id}
