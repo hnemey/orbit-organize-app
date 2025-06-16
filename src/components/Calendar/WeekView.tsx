@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
@@ -22,9 +23,8 @@ const WeekView: React.FC<WeekViewProps> = ({
   // Scroll to 6AM on component mount
   useEffect(() => {
     if (scrollContainerRef.current) {
-      // 6AM is the 12th slot (index 12 * 2 = 24 in 30-minute intervals)
-      const sixAmSlot = 12 * 2; // 6AM in 30-minute slots
-      const slotHeight = 32; // Approximate height of each time slot
+      const sixAmSlot = 12 * 2;
+      const slotHeight = 32;
       scrollContainerRef.current.scrollTop = sixAmSlot * slotHeight;
     }
   }, []);
@@ -50,6 +50,19 @@ const WeekView: React.FC<WeekViewProps> = ({
     e.preventDefault();
   };
 
+  // Calculate task positions and heights
+  const getTaskLayout = (task: Task) => {
+    const startHour = task.scheduledTime ? parseInt(task.scheduledTime.split(':')[0]) : 9;
+    const startMinute = task.scheduledTime ? parseInt(task.scheduledTime.split(':')[1]) : 0;
+    const startSlot = startHour * 2 + (startMinute >= 30 ? 1 : 0);
+    
+    const durationSlots = Math.ceil(task.estimatedMinutes / 30);
+    const height = durationSlots * 32; // 32px per slot
+    const top = startSlot * 32;
+    
+    return { top, height };
+  };
+
   return (
     <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
       {/* Week day headers */}
@@ -72,34 +85,26 @@ const WeekView: React.FC<WeekViewProps> = ({
       {/* Week grid with time slots - scrollable through all 24 hours */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto"
+        className="flex-1 overflow-y-auto relative"
       >
-        {/* Generate all 48 time slots for full 24 hours */}
+        {/* Background time slots */}
         {Array.from({ length: 48 }, (_, i) => {
           const hour = Math.floor(i / 2);
           const minute = (i % 2) * 30;
           const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
           
-          // Convert to 12-hour format for display
           const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
           const ampm = hour >= 12 ? 'PM' : 'AM';
           const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
 
           return (
             <div key={i} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700 h-8">
-              {/* Time column */}
               <div className="p-1 border-r border-gray-600 text-xs text-gray-300 font-medium flex items-center">
                 {displayTime}
               </div>
               
-              {/* Day columns */}
               {weekDays.map(date => {
-                const dayTasks = getTasksForDate(date).filter(task => {
-                  if (!task.scheduledTime) return time24 === '09:00'; // Default unscheduled tasks to 9 AM
-                  return task.scheduledTime.startsWith(time24.substring(0, 2));
-                });
                 const isCurrentDay = isToday(date);
-
                 return (
                   <div
                     key={format(date, 'yyyy-MM-dd')}
@@ -108,31 +113,44 @@ const WeekView: React.FC<WeekViewProps> = ({
                     }`}
                     onDrop={(e) => handleDrop(e, date, time24)}
                     onDragOver={handleDragOver}
-                  >
-                    <div className="space-y-1">
-                      {dayTasks.slice(0, 1).map(task => (
-                        <div
-                          key={task.id}
-                          className="text-xs p-1 rounded text-white truncate cursor-pointer"
-                          style={{ backgroundColor: getProjectColor(task.projectId) }}
-                          title={task.name}
-                          draggable
-                          onDragStart={(e) => e.dataTransfer.setData('text/plain', task.id)}
-                        >
-                          {task.name}
-                        </div>
-                      ))}
-                      {dayTasks.length > 1 && (
-                        <div className="text-xs text-gray-400">
-                          +{dayTasks.length - 1}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  />
                 );
               })}
             </div>
           );
+        })}
+
+        {/* Overlay tasks as positioned elements */}
+        {weekDays.map((date, dayIndex) => {
+          const dayTasks = getTasksForDate(date);
+          const columnWidth = `calc((100% - 12.5%) / 7)`; // Subtract time column width, divide by 7 days
+          const leftOffset = `calc(12.5% + ${dayIndex} * ${columnWidth})`;
+
+          return dayTasks.map(task => {
+            const { top, height } = getTaskLayout(task);
+            return (
+              <div
+                key={`${task.id}-${format(date, 'yyyy-MM-dd')}`}
+                className="absolute px-1 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-2 flex items-center"
+                style={{ 
+                  backgroundColor: getProjectColor(task.projectId),
+                  borderLeftColor: getProjectColor(task.projectId),
+                  top: `${top}px`,
+                  height: `${height}px`,
+                  minHeight: '32px',
+                  left: leftOffset,
+                  width: columnWidth,
+                  marginLeft: '2px',
+                  marginRight: '2px'
+                }}
+                title={`${task.name} - ${task.estimatedMinutes} minutes`}
+                draggable
+                onDragStart={(e) => e.dataTransfer.setData('text/plain', task.id)}
+              >
+                <span className="truncate">{task.name}</span>
+              </div>
+            );
+          });
         })}
       </div>
     </div>

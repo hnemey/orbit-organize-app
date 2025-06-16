@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, isToday } from 'date-fns';
@@ -22,9 +23,8 @@ const DayView: React.FC<DayViewProps> = ({
   // Scroll to 6AM on component mount
   useEffect(() => {
     if (scrollContainerRef.current) {
-      // 6AM is the 12th slot (index 12 * 2 = 24 in 30-minute intervals)
-      const sixAmSlot = 12 * 2; // 6AM in 30-minute slots
-      const slotHeight = 32; // Approximate height of each time slot
+      const sixAmSlot = 12 * 2;
+      const slotHeight = 32;
       scrollContainerRef.current.scrollTop = sixAmSlot * slotHeight;
     }
   }, []);
@@ -42,6 +42,19 @@ const DayView: React.FC<DayViewProps> = ({
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
+  };
+
+  // Calculate task positions and heights
+  const getTaskLayout = (task: Task) => {
+    const startHour = task.scheduledTime ? parseInt(task.scheduledTime.split(':')[0]) : 9;
+    const startMinute = task.scheduledTime ? parseInt(task.scheduledTime.split(':')[1]) : 0;
+    const startSlot = startHour * 2 + (startMinute >= 30 ? 1 : 0);
+    
+    const durationSlots = Math.ceil(task.estimatedMinutes / 30);
+    const height = durationSlots * 32; // 32px per slot
+    const top = startSlot * 32;
+    
+    return { top, height };
   };
 
   return (
@@ -73,50 +86,51 @@ const DayView: React.FC<DayViewProps> = ({
       {/* Time grid - scrollable through all 24 hours */}
       <div 
         ref={scrollContainerRef}
-        className="flex-1 overflow-y-auto"
+        className="flex-1 overflow-y-auto relative"
       >
-        {/* Generate all 48 time slots for full 24 hours */}
+        {/* Background time slots */}
         {Array.from({ length: 48 }, (_, i) => {
           const hour = Math.floor(i / 2);
           const minute = (i % 2) * 30;
           const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
           
-          // Convert to 12-hour format for display
           const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
           const ampm = hour >= 12 ? 'PM' : 'AM';
           const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
 
-          const tasksAtTime = dayTasks.filter(task => {
-            if (!task.scheduledTime) return time24 === '09:00'; // Default unscheduled tasks to 9 AM
-            return task.scheduledTime.startsWith(time24.substring(0, 2));
-          });
-
           return (
             <div key={i} className="flex border-b border-gray-600 hover:bg-gray-700 h-8">
-              {/* Time column */}
               <div className="w-24 px-3 py-1 text-xs text-gray-300 font-medium border-r border-gray-600 flex items-center">
                 {displayTime}
               </div>
-              
-              {/* Task area */}
               <div 
-                className="flex-1 px-3 py-1 flex items-center"
+                className="flex-1 px-3 py-1"
                 onDrop={(e) => handleDrop(e, time24)}
                 onDragOver={handleDragOver}
-              >
-                {tasksAtTime.map(task => (
-                  <div
-                    key={task.id}
-                    className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium text-white mb-1 mr-2 cursor-pointer"
-                    style={{ backgroundColor: getProjectColor(task.projectId) }}
-                    title={`${task.name} - ${task.estimatedMinutes} minutes`}
-                    draggable
-                    onDragStart={(e) => e.dataTransfer.setData('text/plain', task.id)}
-                  >
-                    {task.name}
-                  </div>
-                ))}
-              </div>
+              />
+            </div>
+          );
+        })}
+
+        {/* Overlay tasks as positioned elements */}
+        {dayTasks.map(task => {
+          const { top, height } = getTaskLayout(task);
+          return (
+            <div
+              key={task.id}
+              className="absolute left-24 right-0 mx-3 px-2 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-4 flex items-center"
+              style={{ 
+                backgroundColor: getProjectColor(task.projectId),
+                borderLeftColor: getProjectColor(task.projectId),
+                top: `${top}px`,
+                height: `${height}px`,
+                minHeight: '32px'
+              }}
+              title={`${task.name} - ${task.estimatedMinutes} minutes`}
+              draggable
+              onDragStart={(e) => e.dataTransfer.setData('text/plain', task.id)}
+            >
+              <span className="truncate">{task.name}</span>
             </div>
           );
         })}
