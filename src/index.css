@@ -7,6 +7,7 @@
 
 @layer base {
   :root {
+    /* Clean white-centered light mode */
     --background: 255 255 255;
     --foreground: 15 23 42;
 
@@ -48,6 +49,7 @@
   }
 
   .dark {
+    /* Original dark mode */
     --background: 15 23 42;
     --foreground: 248 250 252;
 
