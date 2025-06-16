@@ -39,7 +39,7 @@ const DailyCalendar: React.FC<DailyCalendarProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 h-full">
+    <div className="bg-gray-800 rounded-lg p-6 h-full flex flex-col">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-white">Today's Calendar</h2>
         <div className="text-right">
@@ -56,9 +56,9 @@ const DailyCalendar: React.FC<DailyCalendarProps> = ({
         {format(today, 'EEEE, MMMM d, yyyy')}
       </div>
 
-      <div className="flex h-96">
-        {/* Time grid - 2/3 width */}
-        <div className="w-2/3 relative overflow-y-auto border-r border-gray-600">
+      {/* Time grid - 2/3 of height */}
+      <div className="flex-1 min-h-0 mb-4">
+        <div className="h-full relative overflow-y-auto border border-gray-600 rounded">
           {Array.from({ length: 32 }, (_, i) => {
             const hour = Math.floor((i + 12) / 2); // Start from 6AM (6 + 6 = 12 slots from midnight)
             const minute = ((i + 12) % 2) * 30;
@@ -110,46 +110,46 @@ const DailyCalendar: React.FC<DailyCalendarProps> = ({
             );
           })}
         </div>
+      </div>
 
-        {/* Tasks sidebar - 1/3 width */}
-        <div className="w-1/3 pl-4 overflow-y-auto">
-          <h3 className="text-sm font-medium text-gray-300 mb-3">Today's Tasks</h3>
-          {dayTasks.length > 0 ? (
-            <div className="space-y-2">
-              {dayTasks.map(task => (
-                <div
-                  key={task.id}
-                  className="p-2 rounded border-l-2 bg-gray-700 cursor-pointer hover:bg-gray-600 transition-colors"
-                  style={{ borderLeftColor: getProjectColor(task.projectId) }}
-                  onClick={() => onTaskEdit(task)}
-                >
-                  <div className="flex items-center mb-1">
-                    <input
-                      type="checkbox"
-                      checked={task.completed}
-                      onChange={(e) => {
-                        e.stopPropagation();
-                        onTaskComplete(task.id);
-                      }}
-                      className="w-3 h-3 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500 mr-2"
-                    />
-                    <span className="text-xs font-medium text-white truncate">
-                      {task.name}
-                    </span>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    {task.scheduledTime || 'No time set'} • {task.estimatedMinutes || 0}min
-                  </div>
+      {/* Tasks sidebar - 1/3 of height */}
+      <div className="h-32 overflow-y-auto">
+        <h3 className="text-sm font-medium text-gray-300 mb-3">Today's Tasks</h3>
+        {dayTasks.length > 0 ? (
+          <div className="space-y-2">
+            {dayTasks.map(task => (
+              <div
+                key={task.id}
+                className="p-2 rounded border-l-2 bg-gray-700 cursor-pointer hover:bg-gray-600 transition-colors"
+                style={{ borderLeftColor: getProjectColor(task.projectId) }}
+                onClick={() => onTaskEdit(task)}
+              >
+                <div className="flex items-center mb-1">
+                  <input
+                    type="checkbox"
+                    checked={task.completed}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      onTaskComplete(task.id);
+                    }}
+                    className="w-3 h-3 text-blue-600 bg-gray-600 border-gray-500 rounded focus:ring-blue-500 mr-2"
+                  />
+                  <span className="text-xs font-medium text-white truncate">
+                    {task.name}
+                  </span>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-400">
-              <div className="text-2xl mb-2">📅</div>
-              <p className="text-xs">No tasks scheduled</p>
-            </div>
-          )}
-        </div>
+                <div className="text-xs text-gray-400">
+                  {task.scheduledTime || 'No time set'} • {task.estimatedMinutes || 0}min
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-4 text-gray-400">
+            <div className="text-xl mb-1">📅</div>
+            <p className="text-xs">No tasks scheduled</p>
+          </div>
+        )}
       </div>
     </div>
   );

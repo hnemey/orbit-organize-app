@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Timer as TimerIcon } from 'lucide-react';
 
 const Timer: React.FC = () => {
@@ -9,6 +9,18 @@ const Timer: React.FC = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editMinutes, setEditMinutes] = useState(25);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    // Create audio element for timer end sound
+    audioRef.current = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmUWfToW');
+    
+    return () => {
+      if (audioRef.current) {
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -22,6 +34,10 @@ const Timer: React.FC = () => {
           setSeconds(59);
         } else {
           setIsRunning(false);
+          // Play sound when timer ends
+          if (audioRef.current) {
+            audioRef.current.play().catch(console.error);
+          }
         }
       }, 1000);
     }
