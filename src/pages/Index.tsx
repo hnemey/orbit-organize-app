@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import TabNavigation from '../components/TabNavigation';
-import TodaysSchedule from '../components/Dashboard/TodaysSchedule';
+import DailyCalendar from '../components/Dashboard/DailyCalendar';
 import TodoList from '../components/Dashboard/TodoList';
 import HabitProgressChart from '../components/Dashboard/HabitProgressChart';
 import Timer from '../components/Dashboard/Timer';
@@ -82,9 +82,9 @@ const Index = () => {
             
             {/* 3-column grid layout */}
             <div className="grid grid-cols-3 gap-8 h-full">
-              {/* First column - Today's Schedule */}
+              {/* First column - Daily Calendar */}
               <div className="col-span-1">
-                <TodaysSchedule
+                <DailyCalendar
                   tasks={tasks}
                   projects={projects}
                   onTaskComplete={handleTaskComplete}
@@ -102,11 +102,11 @@ const Index = () => {
                   onTaskEdit={handleTaskEdit}
                 />
 
-                {/* Timer and Daily Habit Progress side by side */}
-                <div className="grid grid-cols-2 gap-8">
-                  <Timer />
-                  <HabitProgressChart habits={habits} />
-                </div>
+                {/* Daily Habit Progress spans both columns */}
+                <HabitProgressChart habits={habits} />
+
+                {/* Timer spans both columns */}
+                <Timer />
               </div>
             </div>
           </div>
