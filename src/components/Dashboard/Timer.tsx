@@ -10,6 +10,8 @@ const Timer: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editMinutes, setEditMinutes] = useState(25);
   const [isAlarmPlaying, setIsAlarmPlaying] = useState(false);
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [pausedTime, setPausedTime] = useState<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Load timer state from localStorage on mount
@@ -22,6 +24,8 @@ const Timer: React.FC = () => {
       setTotalTime(state.totalTime);
       setIsRunning(state.isRunning);
       setIsAlarmPlaying(state.isAlarmPlaying);
+      setStartTime(state.startTime);
+      setPausedTime(state.pausedTime);
       setEditMinutes(Math.floor(state.totalTime / 60));
     }
   }, []);
@@ -33,10 +37,12 @@ const Timer: React.FC = () => {
       seconds,
       totalTime,
       isRunning,
-      isAlarmPlaying
+      isAlarmPlaying,
+      startTime,
+      pausedTime
     };
     localStorage.setItem('timer-state', JSON.stringify(state));
-  }, [minutes, seconds, totalTime, isRunning, isAlarmPlaying]);
+  }, [minutes, seconds, totalTime, isRunning, isAlarmPlaying, startTime, pausedTime]);
 
   useEffect(() => {
     // Create audio element for timer end sound
@@ -60,37 +66,59 @@ const Timer: React.FC = () => {
     }
   }, [isAlarmPlaying]);
 
+  // Update timer based on elapsed time
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
-    if (isRunning && (minutes > 0 || seconds > 0)) {
+    if (isRunning && startTime && !isAlarmPlaying) {
       interval = setInterval(() => {
-        if (seconds > 0) {
-          setSeconds(seconds - 1);
-        } else if (minutes > 0) {
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        } else {
+        const now = Date.now();
+        const elapsed = Math.floor((now - startTime) / 1000);
+        const remaining = totalTime - elapsed;
+        
+        if (remaining <= 0) {
+          setMinutes(0);
+          setSeconds(0);
           setIsRunning(false);
           setIsAlarmPlaying(true);
+          setStartTime(null);
+        } else {
+          setMinutes(Math.floor(remaining / 60));
+          setSeconds(remaining % 60);
         }
-      }, 1000);
+      }, 100); // Check every 100ms for smoother updates
     }
 
     return () => clearInterval(interval);
-  }, [isRunning, minutes, seconds]);
+  }, [isRunning, startTime, totalTime, isAlarmPlaying]);
 
   const startTimer = () => {
+    const now = Date.now();
+    const currentRemaining = minutes * 60 + seconds;
+    
+    if (pausedTime) {
+      // Resume from paused state
+      setStartTime(now - (totalTime - currentRemaining) * 1000);
+      setPausedTime(null);
+    } else {
+      // Start fresh
+      setStartTime(now);
+    }
+    
     setIsRunning(true);
   };
 
   const pauseTimer = () => {
     setIsRunning(false);
+    setPausedTime(Date.now());
+    setStartTime(null);
   };
 
   const resetTimer = () => {
     setIsRunning(false);
     setIsAlarmPlaying(false);
+    setStartTime(null);
+    setPausedTime(null);
     setMinutes(Math.floor(totalTime / 60));
     setSeconds(totalTime % 60);
   };
@@ -102,6 +130,8 @@ const Timer: React.FC = () => {
     setSeconds(0);
     setIsRunning(false);
     setIsAlarmPlaying(false);
+    setStartTime(null);
+    setPausedTime(null);
     setIsEditing(false);
   };
 
