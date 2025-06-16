@@ -4,6 +4,9 @@ import TabNavigation from '../components/TabNavigation';
 import TodaysSchedule from '../components/Dashboard/TodaysSchedule';
 import TodoList from '../components/Dashboard/TodoList';
 import HabitProgressChart from '../components/Dashboard/HabitProgressChart';
+import HabitsPage from '../components/Habits/HabitsPage';
+import ProjectsPage from '../components/Projects/ProjectsPage';
+import CalendarPage from '../components/Calendar/CalendarPage';
 import TaskModal from '../components/TaskModal';
 import { TabType, Habit, Task, Project } from '../types';
 import { loadHabits, saveHabits, loadProjects, saveProjects, loadTasks, saveTasks } from '../utils/storage';
@@ -97,24 +100,27 @@ const Index = () => {
         );
       case 'habits':
         return (
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-white">Habits</h1>
-            <p className="text-gray-400 mt-4">Habit tracking coming soon...</p>
-          </div>
+          <HabitsPage
+            habits={habits}
+            onHabitsChange={setHabits}
+          />
         );
       case 'projects':
         return (
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-white">Projects</h1>
-            <p className="text-gray-400 mt-4">Project management coming soon...</p>
-          </div>
+          <ProjectsPage
+            projects={projects}
+            tasks={tasks}
+            onProjectsChange={setProjects}
+            onTasksChange={setTasks}
+          />
         );
       case 'calendar':
         return (
-          <div className="max-w-7xl mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-white">Calendar</h1>
-            <p className="text-gray-400 mt-4">Calendar view coming soon...</p>
-          </div>
+          <CalendarPage
+            tasks={tasks}
+            projects={projects}
+            onTasksChange={setTasks}
+          />
         );
       default:
         return null;
@@ -135,7 +141,7 @@ const Index = () => {
         projects={projects}
       />
 
-      {/* Floating Action Button */}
+      {/* Floating Action Button - only show on dashboard */}
       {activeTab === 'dashboard' && (
         <button
           onClick={() => setIsTaskModalOpen(true)}
