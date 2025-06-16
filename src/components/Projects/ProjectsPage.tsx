@@ -4,7 +4,6 @@ import { Project, Task } from '../../types';
 import ProjectSidebar from './ProjectSidebar';
 import ProjectGrid from './ProjectGrid';
 import TaskModal from '../TaskModal';
-import { filterTasks } from '../../utils/dateUtils';
 
 interface ProjectsPageProps {
   projects: Project[];
@@ -88,6 +87,9 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
     ? tasks.filter(task => task.projectId === selectedProject)
     : tasks;
 
+  // Simple filter function that just returns the tasks
+  const simpleFilterTasks = (tasks: Task[]) => tasks;
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-white mb-8">Projects</h1>
@@ -102,7 +104,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
         <ProjectGrid
           projects={projects}
           tasks={filteredTasks}
-          filterTasks={filterTasks}
+          filterTasks={simpleFilterTasks}
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onAddTask={handleAddTask}

@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
 import { Task, Project } from '../../types';
-import { addDays, addMonths, addYears, startOfMonth } from 'date-fns';
+import { addDays, addMonths, addYears, startOfMonth, addWeeks } from 'date-fns';
 import CalendarHeader from './CalendarHeader';
 import MonthView from './MonthView';
+import WeekView from './WeekView';
+import DayView from './DayView';
 import YearView from './YearView';
 import UnscheduledSidebar from './UnscheduledSidebar';
 
@@ -50,7 +52,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
         setCurrentDate(prev => addDays(prev, multiplier));
         break;
       case 'week':
-        setCurrentDate(prev => addDays(prev, multiplier * 7));
+        setCurrentDate(prev => addWeeks(prev, multiplier));
         break;
       case 'month':
         setCurrentDate(prev => addMonths(prev, multiplier));
@@ -80,33 +82,53 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   const renderCalendarView = () => {
-    if (view === 'year') {
-      return (
-        <YearView
-          currentDate={currentDate}
-          tasks={getScheduledTasks()}
-          projects={projects}
-          onMonthClick={(month) => {
-            setCurrentDate(startOfMonth(new Date(currentDate.getFullYear(), month)));
-            setView('month');
-          }}
-        />
-      );
+    const scheduledTasks = getScheduledTasks();
+    
+    switch (view) {
+      case 'year':
+        return (
+          <YearView
+            currentDate={currentDate}
+            tasks={scheduledTasks}
+            projects={projects}
+            onMonthClick={(month) => {
+              setCurrentDate(startOfMonth(new Date(currentDate.getFullYear(), month)));
+              setView('month');
+            }}
+          />
+        );
+      case 'week':
+        return (
+          <WeekView
+            currentDate={currentDate}
+            tasks={scheduledTasks}
+            projects={projects}
+            onTaskMove={handleTaskMove}
+          />
+        );
+      case 'day':
+        return (
+          <DayView
+            currentDate={currentDate}
+            tasks={scheduledTasks}
+            projects={projects}
+            onTaskMove={handleTaskMove}
+          />
+        );
+      default:
+        return (
+          <MonthView
+            currentDate={currentDate}
+            tasks={scheduledTasks}
+            projects={projects}
+            onTaskMove={handleTaskMove}
+          />
+        );
     }
-
-    // Default to month view for now (week and day views can be added later)
-    return (
-      <MonthView
-        currentDate={currentDate}
-        tasks={getScheduledTasks()}
-        projects={projects}
-        onTaskMove={handleTaskMove}
-      />
-    );
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-900 min-h-screen">
       <CalendarHeader
         currentDate={currentDate}
         view={view}

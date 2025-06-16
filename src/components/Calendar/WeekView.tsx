@@ -1,26 +1,23 @@
 
 import React from 'react';
 import { Task, Project } from '../../types';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isToday, isSameMonth } from 'date-fns';
+import { format, startOfWeek, addDays, isToday, isSameDay } from 'date-fns';
 
-interface MonthViewProps {
+interface WeekViewProps {
   currentDate: Date;
   tasks: Task[];
   projects: Project[];
   onTaskMove: (taskId: string, newDate: string) => void;
 }
 
-const MonthView: React.FC<MonthViewProps> = ({
+const WeekView: React.FC<WeekViewProps> = ({
   currentDate,
   tasks,
   projects,
   onTaskMove
 }) => {
-  const monthStart = startOfMonth(currentDate);
-  const monthEnd = endOfMonth(currentDate);
-  const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
-  const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
-  const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+  const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
+  const weekDays = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
 
   const getTasksForDate = (date: Date) => {
     const dateStr = format(date, 'yyyy-MM-dd');
@@ -43,43 +40,39 @@ const MonthView: React.FC<MonthViewProps> = ({
     e.preventDefault();
   };
 
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
   return (
     <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
       {/* Week day headers */}
       <div className="grid grid-cols-7 bg-gray-700 border-b border-gray-600">
         {weekDays.map(day => (
-          <div key={day} className="p-3 text-center border-r last:border-r-0 border-gray-600">
-            <span className="text-sm font-medium text-gray-300">{day}</span>
+          <div key={format(day, 'yyyy-MM-dd')} className="p-4 text-center border-r last:border-r-0 border-gray-600">
+            <div className="text-sm font-medium text-gray-300">{format(day, 'EEE')}</div>
+            <div className={`text-lg font-semibold mt-1 ${
+              isToday(day) ? 'text-blue-400' : 'text-white'
+            }`}>
+              {format(day, 'd')}
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Calendar grid */}
-      <div className="grid grid-cols-7">
-        {days.map(date => {
+      {/* Week grid */}
+      <div className="grid grid-cols-7 h-96">
+        {weekDays.map(date => {
           const dayTasks = getTasksForDate(date);
-          const isCurrentMonth = isSameMonth(date, currentDate);
           const isCurrentDay = isToday(date);
 
           return (
             <div
               key={format(date, 'yyyy-MM-dd')}
-              className={`min-h-32 border-r border-b border-gray-600 last:border-r-0 p-2 ${
-                !isCurrentMonth ? 'bg-gray-900 text-gray-500' : 'bg-gray-800'
-              } ${isCurrentDay ? 'bg-gray-700' : ''}`}
+              className={`border-r border-gray-600 last:border-r-0 p-2 ${
+                isCurrentDay ? 'bg-gray-700' : 'bg-gray-800'
+              }`}
               onDrop={(e) => handleDrop(e, date)}
               onDragOver={handleDragOver}
             >
-              <div className={`text-sm font-medium mb-2 ${
-                isCurrentDay ? 'text-blue-400' : isCurrentMonth ? 'text-white' : 'text-gray-500'
-              }`}>
-                {format(date, 'd')}
-              </div>
-
               <div className="space-y-1">
-                {dayTasks.slice(0, 3).map(task => (
+                {dayTasks.slice(0, 4).map(task => (
                   <div
                     key={task.id}
                     className="text-xs p-1 rounded text-white truncate cursor-pointer"
@@ -91,9 +84,9 @@ const MonthView: React.FC<MonthViewProps> = ({
                     {task.name}
                   </div>
                 ))}
-                {dayTasks.length > 3 && (
+                {dayTasks.length > 4 && (
                   <div className="text-xs text-gray-400">
-                    +{dayTasks.length - 3} more
+                    +{dayTasks.length - 4} more
                   </div>
                 )}
               </div>
@@ -105,4 +98,4 @@ const MonthView: React.FC<MonthViewProps> = ({
   );
 };
 
-export default MonthView;
+export default WeekView;

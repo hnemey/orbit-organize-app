@@ -34,7 +34,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 mb-4">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-4 mb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
@@ -47,18 +47,18 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={() => onNavigate('prev')}
-              className="p-2 hover:bg-gray-100 rounded"
+              className="p-2 hover:bg-gray-700 rounded text-gray-300 hover:text-white"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
             
-            <h2 className="text-xl font-semibold text-gray-900 min-w-48 text-center">
+            <h2 className="text-xl font-semibold text-white min-w-48 text-center">
               {getHeaderTitle()}
             </h2>
             
             <button
               onClick={() => onNavigate('next')}
-              className="p-2 hover:bg-gray-100 rounded"
+              className="p-2 hover:bg-gray-700 rounded text-gray-300 hover:text-white"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -71,7 +71,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             className={`px-3 py-1 text-sm rounded transition-colors ${
               view === 'month'
                 ? 'bg-blue-100 text-blue-700'
-                : 'text-gray-600 hover:bg-gray-100'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
           >
             Month
@@ -81,7 +81,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             className={`px-3 py-1 text-sm rounded transition-colors ${
               view === 'week'
                 ? 'bg-blue-100 text-blue-700'
-                : 'text-gray-600 hover:bg-gray-100'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
           >
             Week
@@ -91,7 +91,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             className={`px-3 py-1 text-sm rounded transition-colors ${
               view === 'day'
                 ? 'bg-blue-100 text-blue-700'
-                : 'text-gray-600 hover:bg-gray-100'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
           >
             Day
@@ -101,7 +101,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
             className={`px-3 py-1 text-sm rounded transition-colors ${
               view === 'year'
                 ? 'bg-blue-100 text-blue-700'
-                : 'text-gray-600 hover:bg-gray-100'
+                : 'text-gray-300 hover:bg-gray-700 hover:text-white'
             }`}
           >
             Year

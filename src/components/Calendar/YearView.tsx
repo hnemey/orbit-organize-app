@@ -24,7 +24,7 @@ const YearView: React.FC<YearViewProps> = ({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 p-6">
       <div className="grid grid-cols-3 gap-6">
         {months.map((month, index) => {
           const monthTasks = getTasksForMonth(month);
@@ -33,17 +33,17 @@ const YearView: React.FC<YearViewProps> = ({
             <div
               key={index}
               onClick={() => onMonthClick(index)}
-              className="bg-gray-50 rounded-lg p-4 cursor-pointer hover:bg-gray-100 transition-colors border"
+              className="bg-gray-700 rounded-lg p-4 cursor-pointer hover:bg-gray-600 transition-colors border border-gray-600"
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-3 text-center">
+              <h3 className="text-lg font-semibold text-white mb-3 text-center">
                 {format(month, 'MMMM')}
               </h3>
               
               <div className="text-center">
-                <div className="text-2xl font-bold text-blue-600 mb-1">
+                <div className="text-2xl font-bold text-blue-400 mb-1">
                   {monthTasks.length}
                 </div>
-                <div className="text-xs text-gray-500">
+                <div className="text-xs text-gray-400">
                   {monthTasks.length === 1 ? 'task' : 'tasks'}
                 </div>
               </div>
