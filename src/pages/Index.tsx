@@ -76,7 +76,7 @@ const Index = () => {
     switch (activeTab) {
       case 'dashboard':
         return (
-          <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="w-full px-4 py-8">
             <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -128,7 +128,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-900 w-full">
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       
       {renderContent()}

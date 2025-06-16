@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Project, Task } from '../../types';
 import ProjectSidebar from './ProjectSidebar';
@@ -96,7 +97,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
   const simpleFilterTasks = (tasks: Task[]) => tasks;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="w-full px-4 py-8">
       <h1 className="text-3xl font-bold text-white mb-8">Projects</h1>
 
       <div className="flex gap-8">

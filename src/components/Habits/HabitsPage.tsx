@@ -56,7 +56,7 @@ const HabitsPage: React.FC<HabitsPageProps> = ({ habits, onHabitsChange }) => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="w-full px-4 py-8">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-white">Habits</h1>
         <button
