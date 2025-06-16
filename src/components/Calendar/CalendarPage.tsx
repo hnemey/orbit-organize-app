@@ -149,8 +149,8 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
             </div>
           )}
 
-          {/* Show calendar for month and year views on the left, sidebar on the right */}
-          {(view === 'month' || view === 'year') && (
+          {/* Show calendar for month view on the left, sidebar on the right */}
+          {view === 'month' && (
             <>
               <div className="flex-1">
                 {renderCalendarView()}
@@ -164,6 +164,13 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
                 />
               </div>
             </>
+          )}
+
+          {/* Show only calendar for year view - no sidebar */}
+          {view === 'year' && (
+            <div className="flex-1">
+              {renderCalendarView()}
+            </div>
           )}
         </div>
       </div>

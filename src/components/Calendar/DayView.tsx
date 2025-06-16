@@ -34,20 +34,6 @@ const DayView: React.FC<DayViewProps> = ({
     e.preventDefault();
   };
 
-  // Generate 30-minute time slots for full 24 hours (12:00 AM to 11:30 PM)
-  const timeSlots = Array.from({ length: 48 }, (_, i) => {
-    const hour = Math.floor(i / 2);
-    const minute = (i % 2) * 30;
-    const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-    
-    // Convert to 12-hour format for display
-    const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
-    
-    return { time24, displayTime };
-  });
-
   return (
     <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[1200px] flex flex-col">
       {/* Header with day and date */}
@@ -74,23 +60,33 @@ const DayView: React.FC<DayViewProps> = ({
         <h3 className="text-sm font-medium text-gray-300">Time</h3>
       </div>
 
-      {/* Time grid */}
+      {/* Time grid - scrollable for all 24 hours */}
       <div 
         className="flex-1 overflow-y-auto"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
-        {timeSlots.map((slot, index) => {
+        {/* Generate all 48 time slots for full 24 hours */}
+        {Array.from({ length: 48 }, (_, i) => {
+          const hour = Math.floor(i / 2);
+          const minute = (i % 2) * 30;
+          const time24 = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+          
+          // Convert to 12-hour format for display
+          const hour12 = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+          const ampm = hour >= 12 ? 'PM' : 'AM';
+          const displayTime = minute === 0 ? `${hour12} ${ampm}` : '';
+
           const tasksAtTime = dayTasks.filter(task => {
-            if (!task.scheduledTime) return slot.time24 === '09:00'; // Default unscheduled tasks to 9 AM
-            return task.scheduledTime.startsWith(slot.time24.substring(0, 2));
+            if (!task.scheduledTime) return time24 === '09:00'; // Default unscheduled tasks to 9 AM
+            return task.scheduledTime.startsWith(time24.substring(0, 2));
           });
 
           return (
-            <div key={index} className="flex border-b border-gray-600 hover:bg-gray-700">
+            <div key={i} className="flex border-b border-gray-600 hover:bg-gray-700">
               {/* Time column */}
               <div className="w-24 px-3 py-1 text-xs text-gray-300 font-medium border-r border-gray-600">
-                {slot.displayTime}
+                {displayTime}
               </div>
               
               {/* Task area */}
