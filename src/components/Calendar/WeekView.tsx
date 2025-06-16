@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
@@ -8,13 +7,15 @@ interface WeekViewProps {
   tasks: Task[];
   projects: Project[];
   onTaskMove: (taskId: string, newDate: string, newTime?: string) => void;
+  onTaskClick?: (task: Task) => void;
 }
 
 const WeekView: React.FC<WeekViewProps> = ({
   currentDate,
   tasks,
   projects,
-  onTaskMove
+  onTaskMove,
+  onTaskClick
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 0 });
@@ -131,7 +132,7 @@ const WeekView: React.FC<WeekViewProps> = ({
             return (
               <div
                 key={`${task.id}-${format(date, 'yyyy-MM-dd')}`}
-                className="absolute px-1 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-2 flex items-center"
+                className="absolute px-1 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-2 flex items-center hover:opacity-80 transition-opacity"
                 style={{ 
                   backgroundColor: getProjectColor(task.projectId),
                   borderLeftColor: getProjectColor(task.projectId),
@@ -146,6 +147,7 @@ const WeekView: React.FC<WeekViewProps> = ({
                 title={`${task.name} - ${task.estimatedMinutes} minutes`}
                 draggable
                 onDragStart={(e) => e.dataTransfer.setData('text/plain', task.id)}
+                onClick={() => onTaskClick?.(task)}
               >
                 <span className="truncate">{task.name}</span>
               </div>

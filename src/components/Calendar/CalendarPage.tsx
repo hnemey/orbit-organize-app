@@ -1,13 +1,12 @@
-
 import React, { useState } from 'react';
 import { Task, Project } from '../../types';
-import { addDays, addMonths, addYears, startOfMonth, addWeeks } from 'date-fns';
 import CalendarHeader from './CalendarHeader';
+import UnscheduledSidebar from './UnscheduledSidebar';
 import MonthView from './MonthView';
 import WeekView from './WeekView';
 import DayView from './DayView';
 import YearView from './YearView';
-import UnscheduledSidebar from './UnscheduledSidebar';
+import TaskModal from '../TaskModal';
 
 interface CalendarPageProps {
   tasks: Task[];
@@ -15,176 +14,136 @@ interface CalendarPageProps {
   onTasksChange: (tasks: Task[]) => void;
 }
 
-type ViewType = 'month' | 'week' | 'day' | 'year';
-
-const CalendarPage: React.FC<CalendarPageProps> = ({ 
-  tasks, 
-  projects, 
-  onTasksChange 
+const CalendarPage: React.FC<CalendarPageProps> = ({
+  tasks,
+  projects,
+  onTasksChange
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<ViewType>('month');
-  const [selectedProject, setSelectedProject] = useState<string>('all');
+  const [view, setView] = useState<'month' | 'week' | 'day' | 'year'>('month');
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | undefined>();
 
   const handleTaskMove = (taskId: string, newDate: string, newTime?: string) => {
+    const updatedTasks = tasks.map(task => {
+      if (task.id === taskId) {
+        return {
+          ...task,
+          scheduledDate: newDate,
+          scheduledTime: newTime || task.scheduledTime
+        };
+      }
+      return task;
+    });
+    onTasksChange(updatedTasks);
+  };
+
+  const handleTaskSave = (taskData: Partial<Task>) => {
+    if (editingTask) {
+      const updatedTasks = tasks.map(task =>
+        task.id === editingTask.id ? { ...task, ...taskData } : task
+      );
+      onTasksChange(updatedTasks);
+    } else {
+      const newTask: Task = {
+        id: `task-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        name: taskData.name || '',
+        notes: taskData.notes || '',
+        priority: taskData.priority || 'medium',
+        urgency: taskData.urgency || 'medium',
+        estimatedMinutes: taskData.estimatedMinutes || 30,
+        completed: taskData.completed || false,
+        projectId: taskData.projectId || projects[0]?.id || '',
+        scheduledDate: taskData.scheduledDate,
+        scheduledTime: taskData.scheduledTime,
+        createdAt: new Date().toISOString()
+      };
+      onTasksChange([...tasks, newTask]);
+    }
+    setEditingTask(undefined);
+    setIsTaskModalOpen(false);
+  };
+
+  const handleTaskDelete = () => {
+    if (editingTask) {
+      const updatedTasks = tasks.filter(task => task.id !== editingTask.id);
+      onTasksChange(updatedTasks);
+      setEditingTask(undefined);
+      setIsTaskModalOpen(false);
+    }
+  };
+
+  const handleToggleTask = (taskId: string) => {
     const updatedTasks = tasks.map(task =>
-      task.id === taskId 
-        ? { ...task, scheduledDate: newDate, scheduledTime: newTime }
-        : task
+      task.id === taskId ? { ...task, completed: !task.completed } : task
     );
     onTasksChange(updatedTasks);
   };
 
-  const handleTaskUnschedule = (taskId: string) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId 
-        ? { ...task, scheduledDate: undefined, scheduledTime: undefined }
-        : task
-    );
-    onTasksChange(updatedTasks);
+  const handleTaskClick = (task: Task) => {
+    setEditingTask(task);
+    setIsTaskModalOpen(true);
   };
 
-  const navigateDate = (direction: 'prev' | 'next') => {
-    const multiplier = direction === 'next' ? 1 : -1;
-    
-    switch (view) {
-      case 'day':
-        setCurrentDate(prev => addDays(prev, multiplier));
-        break;
-      case 'week':
-        setCurrentDate(prev => addWeeks(prev, multiplier));
-        break;
-      case 'month':
-        setCurrentDate(prev => addMonths(prev, multiplier));
-        break;
-      case 'year':
-        setCurrentDate(prev => addYears(prev, multiplier));
-        break;
-    }
-  };
-
-  const goToToday = () => {
-    setCurrentDate(new Date());
-  };
-
-  const getUnscheduledTasks = () => {
-    let unscheduled = tasks.filter(task => !task.scheduledDate && !task.completed);
-    
-    if (selectedProject !== 'all') {
-      unscheduled = unscheduled.filter(task => task.projectId === selectedProject);
-    }
-    
-    return unscheduled;
-  };
-
-  const getScheduledTasks = () => {
-    return tasks.filter(task => task.scheduledDate);
-  };
+  const unscheduledTasks = tasks.filter(task => !task.scheduledDate);
 
   const renderCalendarView = () => {
-    const scheduledTasks = getScheduledTasks();
-    
+    const commonProps = {
+      currentDate,
+      tasks,
+      projects,
+      onTaskMove: handleTaskMove,
+      onTaskClick: handleTaskClick
+    };
+
     switch (view) {
-      case 'year':
-        return (
-          <YearView
-            currentDate={currentDate}
-            tasks={scheduledTasks}
-            projects={projects}
-            onMonthClick={(month) => {
-              setCurrentDate(startOfMonth(new Date(currentDate.getFullYear(), month)));
-              setView('month');
-            }}
-          />
-        );
+      case 'month':
+        return <MonthView {...commonProps} />;
       case 'week':
-        return (
-          <WeekView
-            currentDate={currentDate}
-            tasks={scheduledTasks}
-            projects={projects}
-            onTaskMove={handleTaskMove}
-          />
-        );
+        return <WeekView {...commonProps} />;
       case 'day':
-        return (
-          <DayView
-            currentDate={currentDate}
-            tasks={scheduledTasks}
-            projects={projects}
-            onTaskMove={handleTaskMove}
-          />
-        );
+        return <DayView {...commonProps} />;
+      case 'year':
+        return <YearView currentDate={currentDate} />;
       default:
-        return (
-          <MonthView
-            currentDate={currentDate}
-            tasks={scheduledTasks}
-            projects={projects}
-            onTaskMove={handleTaskMove}
-          />
-        );
+        return <MonthView {...commonProps} />;
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto min-h-screen">
-      <div className="px-4 py-8">
-        <CalendarHeader
-          currentDate={currentDate}
-          view={view}
-          onViewChange={setView}
-          onNavigate={navigateDate}
-          onToday={goToToday}
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      <CalendarHeader
+        currentDate={currentDate}
+        onDateChange={setCurrentDate}
+        view={view}
+        onViewChange={setView}
+      />
+
+      <div className="flex gap-6 mt-6">
+        <UnscheduledSidebar
+          tasks={unscheduledTasks}
+          projects={projects}
+          onToggleTask={handleToggleTask}
+          onTaskClick={handleTaskClick}
+          onAddTask={() => setIsTaskModalOpen(true)}
         />
 
-        <div className="flex gap-6 h-full">
-          {/* Show calendar for day and week views on the left */}
-          {(view === 'day' || view === 'week') && (
-            <div className="flex-1">
-              {renderCalendarView()}
-            </div>
-          )}
-
-          {/* Show unscheduled sidebar for day and week views on the right */}
-          {(view === 'day' || view === 'week') && (
-            <div className="w-80 h-full">
-              <UnscheduledSidebar
-                tasks={getUnscheduledTasks()}
-                projects={projects}
-                selectedProject={selectedProject}
-                onProjectChange={setSelectedProject}
-                onTaskUnschedule={handleTaskUnschedule}
-              />
-            </div>
-          )}
-
-          {/* Show calendar for month view on the left, sidebar on the right */}
-          {view === 'month' && (
-            <>
-              <div className="flex-1">
-                {renderCalendarView()}
-              </div>
-              <div className="w-80 h-full">
-                <UnscheduledSidebar
-                  tasks={getUnscheduledTasks()}
-                  projects={projects}
-                  selectedProject={selectedProject}
-                  onProjectChange={setSelectedProject}
-                  onTaskUnschedule={handleTaskUnschedule}
-                />
-              </div>
-            </>
-          )}
-
-          {/* Show only calendar for year view - no sidebar */}
-          {view === 'year' && (
-            <div className="flex-1">
-              {renderCalendarView()}
-            </div>
-          )}
-        </div>
+        {renderCalendarView()}
       </div>
+
+      {isTaskModalOpen && (
+        <TaskModal
+          isOpen={isTaskModalOpen}
+          task={editingTask}
+          onClose={() => {
+            setIsTaskModalOpen(false);
+            setEditingTask(undefined);
+          }}
+          onSave={handleTaskSave}
+          onDelete={editingTask ? handleTaskDelete : undefined}
+          projects={projects}
+        />
+      )}
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, isToday } from 'date-fns';
@@ -8,13 +7,15 @@ interface DayViewProps {
   tasks: Task[];
   projects: Project[];
   onTaskMove: (taskId: string, newDate: string, newTime?: string) => void;
+  onTaskClick?: (task: Task) => void;
 }
 
 const DayView: React.FC<DayViewProps> = ({
   currentDate,
   tasks,
   projects,
-  onTaskMove
+  onTaskMove,
+  onTaskClick
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const dateStr = format(currentDate, 'yyyy-MM-dd');
@@ -118,7 +119,7 @@ const DayView: React.FC<DayViewProps> = ({
           return (
             <div
               key={task.id}
-              className="absolute left-24 right-0 mx-3 px-2 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-4 flex items-center"
+              className="absolute left-24 right-0 mx-3 px-2 py-1 rounded text-xs font-medium text-white cursor-pointer border-l-4 flex items-center hover:opacity-80 transition-opacity"
               style={{ 
                 backgroundColor: getProjectColor(task.projectId),
                 borderLeftColor: getProjectColor(task.projectId),
@@ -129,6 +130,7 @@ const DayView: React.FC<DayViewProps> = ({
               title={`${task.name} - ${task.estimatedMinutes} minutes`}
               draggable
               onDragStart={(e) => e.dataTransfer.setData('text/plain', task.id)}
+              onClick={() => onTaskClick?.(task)}
             >
               <span className="truncate">{task.name}</span>
             </div>

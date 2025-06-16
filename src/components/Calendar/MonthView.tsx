@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, startOfWeek, endOfWeek, isToday, isSameMonth } from 'date-fns';
@@ -8,13 +7,15 @@ interface MonthViewProps {
   tasks: Task[];
   projects: Project[];
   onTaskMove: (taskId: string, newDate: string) => void;
+  onTaskClick?: (task: Task) => void;
 }
 
 const MonthView: React.FC<MonthViewProps> = ({
   currentDate,
   tasks,
   projects,
-  onTaskMove
+  onTaskMove,
+  onTaskClick
 }) => {
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -82,11 +83,12 @@ const MonthView: React.FC<MonthViewProps> = ({
                 {dayTasks.slice(0, 4).map(task => (
                   <div
                     key={task.id}
-                    className="text-sm p-3 rounded text-white truncate cursor-pointer"
+                    className="text-sm p-3 rounded text-white truncate cursor-pointer hover:opacity-80 transition-opacity"
                     style={{ backgroundColor: getProjectColor(task.projectId) }}
                     title={task.name}
                     draggable
                     onDragStart={(e) => e.dataTransfer.setData('text/plain', task.id)}
+                    onClick={() => onTaskClick?.(task)}
                   >
                     {task.name}
                   </div>
