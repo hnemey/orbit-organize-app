@@ -49,20 +49,20 @@ const DayView: React.FC<DayViewProps> = ({
   });
 
   return (
-    <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+    <div className="flex-1 bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
       {/* Header with day and date */}
-      <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+      <div className="bg-gray-700 px-6 py-4 border-b border-gray-600">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-medium text-gray-900">
+            <h2 className="text-lg font-medium text-white">
               {format(currentDate, 'EEEE, MMMM d, yyyy')}
             </h2>
           </div>
           <div className="text-right">
-            <div className="text-sm text-gray-500 uppercase tracking-wide">
+            <div className="text-sm text-gray-400 uppercase tracking-wide">
               {format(currentDate, 'EEE')}
             </div>
-            <div className={`text-2xl font-bold ${isToday(currentDate) ? 'text-blue-600' : 'text-gray-900'}`}>
+            <div className={`text-2xl font-bold ${isToday(currentDate) ? 'text-blue-400' : 'text-white'}`}>
               {format(currentDate, 'd')}
             </div>
           </div>
@@ -70,8 +70,8 @@ const DayView: React.FC<DayViewProps> = ({
       </div>
 
       {/* Time column header */}
-      <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
-        <h3 className="text-sm font-medium text-gray-700">Time</h3>
+      <div className="bg-gray-700 px-6 py-3 border-b border-gray-600">
+        <h3 className="text-sm font-medium text-gray-300">Time</h3>
       </div>
 
       {/* Time grid */}
@@ -87,9 +87,9 @@ const DayView: React.FC<DayViewProps> = ({
           });
 
           return (
-            <div key={index} className="flex border-b border-gray-100 hover:bg-gray-50">
+            <div key={index} className="flex border-b border-gray-600 hover:bg-gray-700">
               {/* Time column */}
-              <div className="w-20 px-4 py-2 text-sm text-gray-500 font-medium border-r border-gray-100">
+              <div className="w-20 px-4 py-2 text-sm text-gray-300 font-medium border-r border-gray-600">
                 {slot.displayTime}
               </div>
               

@@ -119,7 +119,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 py-8 bg-black min-h-screen">
       <CalendarHeader
         currentDate={currentDate}
         view={view}
