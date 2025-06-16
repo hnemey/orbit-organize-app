@@ -16,27 +16,15 @@ const ProjectSidebar: React.FC<ProjectSidebarProps> = ({
 }) => {
   return (
     <div className="bg-gray-800 rounded-lg p-6">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">Projects</h3>
-        <button
-          onClick={onAddProject}
-          className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm transition-colors"
-        >
-          <Plus size={16} />
-          Add
-        </button>
-      </div>
+      <h3 className="text-lg font-semibold text-white mb-4">Projects</h3>
       
       <div className="space-y-2">
         <button
-          onClick={() => onProjectSelect(null)}
-          className={`w-full text-left px-3 py-2 rounded transition-colors ${
-            selectedProject === null
-              ? 'bg-blue-600 text-white'
-              : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-          }`}
+          onClick={onAddProject}
+          className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors"
         >
-          All Projects
+          <Plus size={16} />
+          Add Project
         </button>
       </div>
     </div>
