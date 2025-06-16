@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Task, Project } from '../../types';
 
@@ -7,6 +8,7 @@ interface UnscheduledSidebarProps {
   selectedProject: string;
   onProjectChange: (projectId: string) => void;
   onTaskUnschedule?: (taskId: string) => void;
+  onTaskClick?: (task: Task) => void;
 }
 
 const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
@@ -14,7 +16,8 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
   projects,
   selectedProject,
   onProjectChange,
-  onTaskUnschedule
+  onTaskUnschedule,
+  onTaskClick
 }) => {
   const getProjectColor = (projectId: string) => {
     const project = projects.find(p => p.id === projectId);
@@ -52,6 +55,15 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
     e.preventDefault();
   };
 
+  const formatDuration = (minutes: number) => {
+    if (minutes === 0) return '0m';
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    if (hours === 0) return `${mins}m`;
+    if (mins === 0) return `${hours}h`;
+    return `${hours}h ${mins}m`;
+  };
+
   return (
     <div 
       className="w-80 bg-gray-900 rounded-lg shadow-sm border border-gray-700 h-[1200px] flex flex-col"
@@ -76,7 +88,8 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
               key={task.id}
               draggable
               onDragStart={(e) => handleDragStart(e, task)}
-              className="p-4 rounded-lg border border-gray-600 cursor-move hover:border-gray-500 hover:shadow-sm transition-all bg-gray-700"
+              onClick={() => onTaskClick?.(task)}
+              className="p-4 rounded-lg border border-gray-600 cursor-pointer hover:border-gray-500 hover:shadow-sm transition-all bg-gray-700"
             >
               <div className="font-medium text-white text-base mb-3">
                 {task.name}
@@ -86,11 +99,11 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <span className={`font-medium ${getPriorityColor(task.priority)}`}>
-                  P Priority
+                  {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)} Priority
                 </span>
                 <span className="text-gray-500">•</span>
                 <span className="text-gray-400">
-                  {task.estimatedMinutes}h {task.estimatedMinutes % 60}m
+                  {formatDuration(task.estimatedMinutes)}
                 </span>
               </div>
             </div>

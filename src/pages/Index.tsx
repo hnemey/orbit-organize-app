@@ -4,6 +4,7 @@ import TabNavigation from '../components/TabNavigation';
 import TodaysSchedule from '../components/Dashboard/TodaysSchedule';
 import TodoList from '../components/Dashboard/TodoList';
 import HabitProgressChart from '../components/Dashboard/HabitProgressChart';
+import Timer from '../components/Dashboard/Timer';
 import HabitsPage from '../components/Habits/HabitsPage';
 import ProjectsPage from '../components/Projects/ProjectsPage';
 import CalendarPage from '../components/Calendar/CalendarPage';
@@ -76,7 +77,7 @@ const Index = () => {
     switch (activeTab) {
       case 'dashboard':
         return (
-          <div className="w-full px-4 py-8">
+          <div className="min-h-screen w-full px-4 py-8">
             <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -93,6 +94,11 @@ const Index = () => {
                 onTaskComplete={handleTaskComplete}
                 onTaskEdit={handleTaskEdit}
               />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <Timer />
+              <div></div>
             </div>
 
             <HabitProgressChart habits={habits} />

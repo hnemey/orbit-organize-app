@@ -188,6 +188,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
           selectedProject={selectedProject}
           onProjectChange={setSelectedProject}
           onTaskUnschedule={handleTaskUnschedule}
+          onTaskClick={handleTaskClick}
         />
 
         {renderCalendarView()}
