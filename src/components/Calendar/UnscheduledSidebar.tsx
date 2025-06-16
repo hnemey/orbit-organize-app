@@ -29,15 +29,24 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
     e.dataTransfer.setData('text/plain', task.id);
   };
 
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'text-red-600';
+      case 'medium': return 'text-yellow-600';
+      case 'low': return 'text-green-600';
+      default: return 'text-gray-600';
+    }
+  };
+
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700">
-      <div className="p-4 border-b border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-3">Unscheduled Tasks</h3>
+    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+      <div className="p-4 border-b border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-3">Unscheduled Tasks</h3>
         
         <select
           value={selectedProject}
           onChange={(e) => onProjectChange(e.target.value)}
-          className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+          className="w-full bg-white border border-gray-300 rounded px-3 py-2 text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         >
           <option value="all">All Projects</option>
           {projects.map(project => (
@@ -49,46 +58,37 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
       </div>
 
       <div className="p-4 max-h-96 overflow-y-auto">
-        <div className="space-y-2">
+        <div className="space-y-3">
           {tasks.map(task => (
             <div
               key={task.id}
               draggable
               onDragStart={(e) => handleDragStart(e, task)}
-              className="p-3 rounded border-l-4 cursor-move hover:bg-gray-700 transition-colors bg-gray-800 border border-gray-600"
-              style={{ borderLeftColor: getProjectColor(task.projectId) }}
+              className="p-3 rounded-lg border border-gray-200 cursor-move hover:border-gray-300 hover:shadow-sm transition-all bg-white"
             >
-              <div className="font-medium text-white text-sm mb-1">
+              <div className="font-medium text-gray-900 text-sm mb-2">
                 {task.name}
               </div>
-              <div className="text-xs text-gray-400 space-y-1">
-                <div>{getProjectName(task.projectId)}</div>
-                <div>{task.estimatedMinutes} minutes</div>
-                <div className="flex gap-2">
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    task.priority === 'high' ? 'bg-red-900 text-red-300' :
-                    task.priority === 'medium' ? 'bg-yellow-900 text-yellow-300' :
-                    'bg-green-900 text-green-300'
-                  }`}>
-                    {task.priority}
-                  </span>
-                  <span className={`px-2 py-1 rounded text-xs ${
-                    task.urgency === 'high' ? 'bg-red-900 text-red-300' :
-                    task.urgency === 'medium' ? 'bg-yellow-900 text-yellow-300' :
-                    'bg-green-900 text-green-300'
-                  }`}>
-                    {task.urgency}
-                  </span>
-                </div>
+              <div className="text-sm text-gray-600 mb-2">
+                {getProjectName(task.projectId)}
+              </div>
+              <div className="flex items-center gap-2 text-xs">
+                <span className={`font-medium ${getPriorityColor(task.priority)}`}>
+                  P Priority
+                </span>
+                <span className="text-gray-400">•</span>
+                <span className="text-gray-600">
+                  {task.estimatedMinutes}h {task.estimatedMinutes % 60}m
+                </span>
               </div>
             </div>
           ))}
 
           {tasks.length === 0 && (
-            <div className="text-center py-8 text-gray-400">
+            <div className="text-center py-8 text-gray-500">
               <div className="text-4xl mb-2">📅</div>
-              <p>No unscheduled tasks</p>
-              <p className="text-xs">
+              <p className="font-medium">No unscheduled tasks</p>
+              <p className="text-xs mt-1">
                 {selectedProject === 'all' 
                   ? 'All tasks have been scheduled'
                   : 'No unscheduled tasks for this project'
@@ -96,12 +96,6 @@ const UnscheduledSidebar: React.FC<UnscheduledSidebarProps> = ({
               </p>
             </div>
           )}
-        </div>
-      </div>
-
-      <div className="p-4 border-t border-gray-700 bg-gray-700">
-        <div className="text-xs text-gray-400">
-          💡 Drag tasks to the calendar to schedule them
         </div>
       </div>
     </div>

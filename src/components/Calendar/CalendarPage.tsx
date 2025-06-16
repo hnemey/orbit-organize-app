@@ -35,15 +35,6 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
     onTasksChange(updatedTasks);
   };
 
-  const handleTaskUnschedule = (taskId: string) => {
-    const updatedTasks = tasks.map(task =>
-      task.id === taskId 
-        ? { ...task, scheduledDate: undefined, scheduledTime: undefined }
-        : task
-    );
-    onTasksChange(updatedTasks);
-  };
-
   const navigateDate = (direction: 'prev' | 'next') => {
     const multiplier = direction === 'next' ? 1 : -1;
     
@@ -128,7 +119,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-900 min-h-screen">
+    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
       <CalendarHeader
         currentDate={currentDate}
         view={view}
@@ -138,18 +129,33 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
       />
 
       <div className="flex gap-6">
+        {/* Show unscheduled sidebar for day and week views */}
+        {(view === 'day' || view === 'week') && (
+          <div className="w-80">
+            <UnscheduledSidebar
+              tasks={getUnscheduledTasks()}
+              projects={projects}
+              selectedProject={selectedProject}
+              onProjectChange={setSelectedProject}
+            />
+          </div>
+        )}
+
         <div className="flex-1">
           {renderCalendarView()}
         </div>
 
-        <div className="w-80">
-          <UnscheduledSidebar
-            tasks={getUnscheduledTasks()}
-            projects={projects}
-            selectedProject={selectedProject}
-            onProjectChange={setSelectedProject}
-          />
-        </div>
+        {/* Show unscheduled sidebar for month and year views on the right */}
+        {(view === 'month' || view === 'year') && (
+          <div className="w-80">
+            <UnscheduledSidebar
+              tasks={getUnscheduledTasks()}
+              projects={projects}
+              selectedProject={selectedProject}
+              onProjectChange={setSelectedProject}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
