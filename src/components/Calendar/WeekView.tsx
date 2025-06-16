@@ -55,16 +55,16 @@ const WeekView: React.FC<WeekViewProps> = ({
   });
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden h-[800px]">
+    <div className="bg-gray-800 rounded-lg shadow-sm border border-gray-700 overflow-hidden">
       {/* Week day headers */}
       <div className="grid grid-cols-8 bg-gray-700 border-b border-gray-600">
-        <div className="p-6 border-r border-gray-600">
-          <div className="text-lg font-medium text-gray-300">Time</div>
+        <div className="p-4 border-r border-gray-600">
+          <div className="text-sm font-medium text-gray-300">Time</div>
         </div>
         {weekDays.map(day => (
-          <div key={format(day, 'yyyy-MM-dd')} className="p-6 text-center border-r last:border-r-0 border-gray-600">
-            <div className="text-lg font-medium text-gray-300">{format(day, 'EEE')}</div>
-            <div className={`text-2xl font-semibold mt-3 ${
+          <div key={format(day, 'yyyy-MM-dd')} className="p-4 text-center border-r last:border-r-0 border-gray-600">
+            <div className="text-sm font-medium text-gray-300">{format(day, 'EEE')}</div>
+            <div className={`text-lg font-semibold mt-1 ${
               isToday(day) ? 'text-blue-400' : 'text-white'
             }`}>
               {format(day, 'd')}
@@ -74,11 +74,11 @@ const WeekView: React.FC<WeekViewProps> = ({
       </div>
 
       {/* Week grid with time slots */}
-      <div className="h-full overflow-y-auto">
+      <div className="h-96 overflow-y-auto">
         {timeSlots.map((slot, index) => (
           <div key={index} className="grid grid-cols-8 border-b border-gray-600 hover:bg-gray-700">
             {/* Time column */}
-            <div className="p-2 border-r border-gray-600 text-sm text-gray-300 font-medium">
+            <div className="p-1 border-r border-gray-600 text-xs text-gray-300 font-medium">
               {slot.displayTime}
             </div>
             
@@ -93,7 +93,7 @@ const WeekView: React.FC<WeekViewProps> = ({
               return (
                 <div
                   key={format(date, 'yyyy-MM-dd')}
-                  className={`border-r border-gray-600 last:border-r-0 p-1 min-h-8 ${
+                  className={`border-r border-gray-600 last:border-r-0 p-1 min-h-6 ${
                     isCurrentDay ? 'bg-gray-700' : 'bg-gray-800'
                   }`}
                   onDrop={(e) => handleDrop(e, date)}
