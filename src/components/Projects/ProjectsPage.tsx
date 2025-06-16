@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { Project, Task } from '../../types';
 import ProjectSidebar from './ProjectSidebar';
 import ProjectGrid from './ProjectGrid';
 import TaskModal from '../TaskModal';
+import { filterTasks } from '../../utils/dateUtils';
 
 interface ProjectsPageProps {
   projects: Project[];
@@ -18,7 +20,6 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
   onTasksChange
 }) => {
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [isAddProjectModalOpen, setIsAddProjectModalOpen] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>();
 
@@ -41,7 +42,6 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
     const updatedProjects = projects.filter(project => project.id !== projectId);
     onProjectsChange(updatedProjects);
 
-    // Also delete tasks associated with the project
     const updatedTasks = tasks.filter(task => task.projectId !== projectId);
     onTasksChange(updatedTasks);
 
@@ -94,15 +94,15 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
 
       <div className="flex gap-8">
         <ProjectSidebar
-          projects={projects}
           selectedProject={selectedProject}
           onProjectSelect={handleProjectSelect}
-          onAddProject={() => setIsAddProjectModalOpen(true)}
+          onAddProject={() => {}}
         />
 
         <ProjectGrid
           projects={projects}
           tasks={filteredTasks}
+          filterTasks={filterTasks}
           onEditProject={handleEditProject}
           onDeleteProject={handleDeleteProject}
           onAddTask={handleAddTask}
@@ -121,7 +121,7 @@ const ProjectsPage: React.FC<ProjectsPageProps> = ({
             setIsTaskModalOpen(false);
             setEditingTask(undefined);
           }}
-          onSave={handleTaskEdit}
+          onSave={(taskData) => handleEditTask(editingTask.id, taskData)}
           onDelete={() => handleTaskDelete(editingTask.id)}
           projects={projects}
         />

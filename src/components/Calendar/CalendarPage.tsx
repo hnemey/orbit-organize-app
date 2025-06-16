@@ -1,11 +1,10 @@
 
 import React, { useState } from 'react';
 import { Task, Project } from '../../types';
-import { addDays, startOfWeek, format, addMonths, addYears, startOfMonth } from 'date-fns';
+import { addDays, addMonths, addYears, startOfMonth } from 'date-fns';
 import CalendarHeader from './CalendarHeader';
-import CalendarGrid from './CalendarGrid';
-import MonthlyView from './MonthlyView';
-import YearlyView from './YearlyView';
+import MonthView from './MonthView';
+import YearView from './YearView';
 import UnscheduledSidebar from './UnscheduledSidebar';
 
 interface CalendarPageProps {
@@ -14,58 +13,49 @@ interface CalendarPageProps {
   onTasksChange: (tasks: Task[]) => void;
 }
 
-type ViewType = 'daily' | 'weekly' | 'monthly' | 'yearly';
+type ViewType = 'month' | 'week' | 'day' | 'year';
 
-const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksChange }) => {
+const CalendarPage: React.FC<CalendarPageProps> = ({ 
+  tasks, 
+  projects, 
+  onTasksChange 
+}) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [view, setView] = useState<ViewType>('weekly');
+  const [view, setView] = useState<ViewType>('month');
   const [selectedProject, setSelectedProject] = useState<string>('all');
 
-  const handleTaskUpdate = (taskId: string, updates: Partial<Task>) => {
+  const handleTaskMove = (taskId: string, newDate: string) => {
     const updatedTasks = tasks.map(task =>
-      task.id === taskId ? { ...task, ...updates } : task
+      task.id === taskId 
+        ? { ...task, scheduledDate: newDate, scheduledTime: undefined }
+        : task
     );
     onTasksChange(updatedTasks);
   };
 
-  const handleTaskMove = (taskId: string, newDate: string, newTime: string) => {
-    handleTaskUpdate(taskId, {
-      scheduledDate: newDate,
-      scheduledTime: newTime
-    });
-  };
-
   const handleTaskUnschedule = (taskId: string) => {
-    handleTaskUpdate(taskId, {
-      scheduledDate: undefined,
-      scheduledTime: undefined
-    });
-  };
-
-  const getViewDates = () => {
-    if (view === 'weekly') {
-      const start = startOfWeek(currentDate, { weekStartsOn: 0 });
-      return Array.from({ length: 7 }, (_, i) => addDays(start, i));
-    } else if (view === 'daily') {
-      return [currentDate];
-    }
-    return [];
+    const updatedTasks = tasks.map(task =>
+      task.id === taskId 
+        ? { ...task, scheduledDate: undefined, scheduledTime: undefined }
+        : task
+    );
+    onTasksChange(updatedTasks);
   };
 
   const navigateDate = (direction: 'prev' | 'next') => {
     const multiplier = direction === 'next' ? 1 : -1;
     
     switch (view) {
-      case 'daily':
+      case 'day':
         setCurrentDate(prev => addDays(prev, multiplier));
         break;
-      case 'weekly':
+      case 'week':
         setCurrentDate(prev => addDays(prev, multiplier * 7));
         break;
-      case 'monthly':
+      case 'month':
         setCurrentDate(prev => addMonths(prev, multiplier));
         break;
-      case 'yearly':
+      case 'year':
         setCurrentDate(prev => addYears(prev, multiplier));
         break;
     }
@@ -86,65 +76,43 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksCha
   };
 
   const getScheduledTasks = () => {
-    if (view === 'monthly' || view === 'yearly') {
-      return tasks.filter(task => task.scheduledDate);
-    }
-    
-    const dates = getViewDates();
-    return tasks.filter(task => {
-      if (!task.scheduledDate) return false;
-      return dates.some(date => format(date, 'yyyy-MM-dd') === task.scheduledDate);
-    });
+    return tasks.filter(task => task.scheduledDate);
   };
 
   const renderCalendarView = () => {
-    if (view === 'monthly') {
+    if (view === 'year') {
       return (
-        <MonthlyView
-          currentDate={currentDate}
-          tasks={getScheduledTasks()}
-          projects={projects}
-          onTaskMove={handleTaskMove}
-          onTaskUpdate={handleTaskUpdate}
-          onTaskUnschedule={handleTaskUnschedule}
-        />
-      );
-    }
-    
-    if (view === 'yearly') {
-      return (
-        <YearlyView
+        <YearView
           currentDate={currentDate}
           tasks={getScheduledTasks()}
           projects={projects}
           onMonthClick={(month) => {
             setCurrentDate(startOfMonth(new Date(currentDate.getFullYear(), month)));
-            setView('monthly');
+            setView('month');
           }}
         />
       );
     }
 
+    // Default to month view for now (week and day views can be added later)
     return (
-      <CalendarGrid
-        dates={getViewDates()}
+      <MonthView
+        currentDate={currentDate}
         tasks={getScheduledTasks()}
         projects={projects}
         onTaskMove={handleTaskMove}
-        onTaskUpdate={handleTaskUpdate}
-        onTaskUnschedule={handleTaskUnschedule}
       />
     );
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-7xl mx-auto px-4 py-8 bg-gray-50 min-h-screen">
       <CalendarHeader
         currentDate={currentDate}
         view={view}
         onViewChange={setView}
         onNavigate={navigateDate}
-        onGoToToday={goToToday}
+        onToday={goToToday}
       />
 
       <div className="flex gap-6">
@@ -158,7 +126,6 @@ const CalendarPage: React.FC<CalendarPageProps> = ({ tasks, projects, onTasksCha
             projects={projects}
             selectedProject={selectedProject}
             onProjectChange={setSelectedProject}
-            onTaskMove={handleTaskMove}
           />
         </div>
       </div>
