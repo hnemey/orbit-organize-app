@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, isToday } from 'date-fns';
@@ -7,7 +6,7 @@ interface DayViewProps {
   currentDate: Date;
   tasks: Task[];
   projects: Project[];
-  onTaskMove: (taskId: string, newDate: string) => void;
+  onTaskMove: (taskId: string, newDate: string, newTime?: string) => void;
 }
 
 const DayView: React.FC<DayViewProps> = ({
@@ -35,10 +34,10 @@ const DayView: React.FC<DayViewProps> = ({
     return project?.color || '#3B82F6';
   };
 
-  const handleDrop = (e: React.DragEvent) => {
+  const handleDrop = (e: React.DragEvent, timeSlot?: string) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('text/plain');
-    onTaskMove(taskId, dateStr);
+    onTaskMove(taskId, dateStr, timeSlot);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -75,8 +74,6 @@ const DayView: React.FC<DayViewProps> = ({
       <div 
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto"
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
       >
         {/* Generate all 48 time slots for full 24 hours */}
         {Array.from({ length: 48 }, (_, i) => {
@@ -102,7 +99,11 @@ const DayView: React.FC<DayViewProps> = ({
               </div>
               
               {/* Task area */}
-              <div className="flex-1 px-3 py-1 flex items-center">
+              <div 
+                className="flex-1 px-3 py-1 flex items-center"
+                onDrop={(e) => handleDrop(e, time24)}
+                onDragOver={handleDragOver}
+              >
                 {tasksAtTime.map(task => (
                   <div
                     key={task.id}

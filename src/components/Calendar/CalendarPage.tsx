@@ -26,10 +26,19 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
   const [view, setView] = useState<ViewType>('month');
   const [selectedProject, setSelectedProject] = useState<string>('all');
 
-  const handleTaskMove = (taskId: string, newDate: string) => {
+  const handleTaskMove = (taskId: string, newDate: string, newTime?: string) => {
     const updatedTasks = tasks.map(task =>
       task.id === taskId 
-        ? { ...task, scheduledDate: newDate, scheduledTime: undefined }
+        ? { ...task, scheduledDate: newDate, scheduledTime: newTime }
+        : task
+    );
+    onTasksChange(updatedTasks);
+  };
+
+  const handleTaskUnschedule = (taskId: string) => {
+    const updatedTasks = tasks.map(task =>
+      task.id === taskId 
+        ? { ...task, scheduledDate: undefined, scheduledTime: undefined }
         : task
     );
     onTasksChange(updatedTasks);
@@ -145,6 +154,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
                 projects={projects}
                 selectedProject={selectedProject}
                 onProjectChange={setSelectedProject}
+                onTaskUnschedule={handleTaskUnschedule}
               />
             </div>
           )}
@@ -161,6 +171,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
                   projects={projects}
                   selectedProject={selectedProject}
                   onProjectChange={setSelectedProject}
+                  onTaskUnschedule={handleTaskUnschedule}
                 />
               </div>
             </>

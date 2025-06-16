@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Task, Project } from '../../types';
 import { format, startOfWeek, addDays, isToday } from 'date-fns';
@@ -7,7 +6,7 @@ interface WeekViewProps {
   currentDate: Date;
   tasks: Task[];
   projects: Project[];
-  onTaskMove: (taskId: string, newDate: string) => void;
+  onTaskMove: (taskId: string, newDate: string, newTime?: string) => void;
 }
 
 const WeekView: React.FC<WeekViewProps> = ({
@@ -40,11 +39,11 @@ const WeekView: React.FC<WeekViewProps> = ({
     return project?.color || '#3B82F6';
   };
 
-  const handleDrop = (e: React.DragEvent, date: Date) => {
+  const handleDrop = (e: React.DragEvent, date: Date, timeSlot?: string) => {
     e.preventDefault();
     const taskId = e.dataTransfer.getData('text/plain');
     const dateStr = format(date, 'yyyy-MM-dd');
-    onTaskMove(taskId, dateStr);
+    onTaskMove(taskId, dateStr, timeSlot);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -107,7 +106,7 @@ const WeekView: React.FC<WeekViewProps> = ({
                     className={`border-r border-gray-600 last:border-r-0 p-1 ${
                       isCurrentDay ? 'bg-gray-700' : 'bg-gray-800'
                     }`}
-                    onDrop={(e) => handleDrop(e, date)}
+                    onDrop={(e) => handleDrop(e, date, time24)}
                     onDragOver={handleDragOver}
                   >
                     <div className="space-y-1">
