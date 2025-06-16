@@ -130,7 +130,14 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
         />
 
         <div className="flex gap-6 h-full">
-          {/* Show unscheduled sidebar for day and week views */}
+          {/* Show calendar for day and week views on the left */}
+          {(view === 'day' || view === 'week') && (
+            <div className="flex-1">
+              {renderCalendarView()}
+            </div>
+          )}
+
+          {/* Show unscheduled sidebar for day and week views on the right */}
           {(view === 'day' || view === 'week') && (
             <div className="w-80 h-full">
               <UnscheduledSidebar
@@ -148,14 +155,19 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
 
           {/* Show unscheduled sidebar for month and year views on the right */}
           {(view === 'month' || view === 'year') && (
-            <div className="w-80 h-full">
-              <UnscheduledSidebar
-                tasks={getUnscheduledTasks()}
-                projects={projects}
-                selectedProject={selectedProject}
-                onProjectChange={setSelectedProject}
-              />
-            </div>
+            <>
+              <div className="flex-1">
+                {renderCalendarView()}
+              </div>
+              <div className="w-80 h-full">
+                <UnscheduledSidebar
+                  tasks={getUnscheduledTasks()}
+                  projects={projects}
+                  selectedProject={selectedProject}
+                  onProjectChange={setSelectedProject}
+                />
+              </div>
+            </>
           )}
         </div>
       </div>
