@@ -11,12 +11,21 @@ const LoginScreen: React.FC = () => {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
+      console.log('Starting Google sign in...');
       await signInWithGoogle();
+      console.log('Google sign in completed');
     } catch (error: any) {
       console.error('Login error:', error);
-      toast.error('Failed to sign in with Google. Please try again.');
-    } finally {
       setIsLoading(false);
+      
+      // Show more specific error messages
+      if (error?.message?.includes('OAuth')) {
+        toast.error('Google authentication is not properly configured. Please check your Supabase settings.');
+      } else if (error?.message?.includes('redirect')) {
+        toast.error('Authentication redirect error. Please check your URL configuration.');
+      } else {
+        toast.error(`Failed to sign in: ${error?.message || 'Please try again.'}`);
+      }
     }
   };
 
@@ -73,6 +82,9 @@ const LoginScreen: React.FC = () => {
           <div className="mt-8 text-center">
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Secure authentication powered by Supabase
+            </p>
+            <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
+              Note: Google OAuth must be configured in Supabase for this to work
             </p>
           </div>
         </div>
