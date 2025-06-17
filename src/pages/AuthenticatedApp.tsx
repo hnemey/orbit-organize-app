@@ -24,22 +24,37 @@ const AuthenticatedApp: React.FC = () => {
 
   // Load data from localStorage on mount
   useEffect(() => {
-    setHabits(loadHabits());
-    setProjects(loadProjects());
-    setTasks(loadTasks());
+    console.log('Loading data from localStorage...');
+    const loadedHabits = loadHabits();
+    const loadedProjects = loadProjects();
+    const loadedTasks = loadTasks();
+    
+    console.log('Loaded habits:', loadedHabits);
+    console.log('Loaded projects:', loadedProjects);
+    console.log('Loaded tasks:', loadedTasks);
+    
+    setHabits(loadedHabits);
+    setProjects(loadedProjects);
+    setTasks(loadedTasks);
   }, []);
 
   // Save data to localStorage when it changes
   useEffect(() => {
-    saveHabits(habits);
+    if (habits.length > 0) {
+      saveHabits(habits);
+    }
   }, [habits]);
 
   useEffect(() => {
-    saveProjects(projects);
+    if (projects.length > 0) {
+      saveProjects(projects);
+    }
   }, [projects]);
 
   useEffect(() => {
-    saveTasks(tasks);
+    if (tasks.length > 0) {
+      saveTasks(tasks);
+    }
   }, [tasks]);
 
   const handleTaskComplete = (taskId: string) => {
@@ -51,7 +66,6 @@ const AuthenticatedApp: React.FC = () => {
   };
 
   const handleTaskEdit = (task: Task) => {
-    // This would open a task edit modal - for now just log
     console.log('Edit task:', task);
   };
 

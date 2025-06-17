@@ -7,7 +7,8 @@ interface AuthContextType {
   user: User | null;
   session: Session | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -27,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener first
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log('Auth state changed:', event, session?.user?.email);
       setSession(session);
@@ -35,7 +36,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     });
 
-    // Then check for existing session
+    // Check for existing session
     const getInitialSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
@@ -58,26 +59,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => subscription.unsubscribe();
   }, []);
 
-  const signInWithGoogle = async () => {
+  const signInWithEmail = async (email: string, password: string) => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Error signing in:', error);
+        throw error;
+      }
+
+      console.log('Sign in successful:', data.user?.email);
+    } catch (error) {
+      setLoading(false);
+      throw error;
+    }
+  };
+
+  const signUpWithEmail = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
         options: {
-          redirectTo: `${window.location.origin}/`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
+          emailRedirectTo: `${window.location.origin}/`,
         },
       });
 
       if (error) {
-        console.error('Error signing in with Google:', error);
+        console.error('Error signing up:', error);
         throw error;
       }
 
-      console.log('Google sign in initiated:', data);
+      console.log('Sign up successful:', data.user?.email);
     } catch (error) {
       setLoading(false);
       throw error;
@@ -92,7 +110,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
       }
       
-      // Clear state immediately
       setSession(null);
       setUser(null);
     } catch (error) {
@@ -105,7 +122,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     session,
     loading,
-    signInWithGoogle,
+    signInWithEmail,
+    signUpWithEmail,
     signOut,
   };
 
