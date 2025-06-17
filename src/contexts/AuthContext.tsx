@@ -62,7 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         queryParams: {
           access_type: 'offline',
-          prompt: 'consent',
+          prompt: 'consent'
         },
       },
     });
