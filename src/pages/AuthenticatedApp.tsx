@@ -6,10 +6,7 @@ import HabitsPage from '@/components/Habits/HabitsPage';
 import ProjectsPage from '@/components/Projects/ProjectsPage';
 import CalendarPage from '@/components/Calendar/CalendarPage';
 import SettingsDropdown from '@/components/Settings/SettingsDropdown';
-import UserProfile from '@/components/Auth/UserProfile';
-import TodaysSchedule from '@/components/Dashboard/TodaysSchedule';
-import HabitProgressChart from '@/components/Dashboard/HabitProgressChart';
-import Timer from '@/components/Dashboard/Timer';
+import MainDashboard from '@/components/Dashboard/MainDashboard';
 import { useTheme } from '@/contexts/ThemeContext';
 import { loadHabits, saveHabits, loadProjects, saveProjects, loadTasks, saveTasks } from '@/utils/storage';
 
@@ -73,19 +70,13 @@ const AuthenticatedApp: React.FC = () => {
     switch (activeTab) {
       case 'dashboard':
         return (
-          <div className="p-8">
-            <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-              <TodaysSchedule 
-                tasks={tasks}
-                projects={projects}
-                onTaskComplete={handleTaskComplete}
-                onTaskEdit={handleTaskEdit}
-              />
-              <Timer />
-              <HabitProgressChart habits={habits} />
-            </div>
-          </div>
+          <MainDashboard 
+            tasks={tasks}
+            projects={projects}
+            habits={habits}
+            onTaskComplete={handleTaskComplete}
+            onTaskEdit={handleTaskEdit}
+          />
         );
       case 'habits':
         return <HabitsPage habits={habits} onHabitsChange={setHabits} />;
@@ -104,19 +95,13 @@ const AuthenticatedApp: React.FC = () => {
         />;
       default:
         return (
-          <div className="p-8">
-            <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
-              <TodaysSchedule 
-                tasks={tasks}
-                projects={projects}
-                onTaskComplete={handleTaskComplete}
-                onTaskEdit={handleTaskEdit}
-              />
-              <Timer />
-              <HabitProgressChart habits={habits} />
-            </div>
-          </div>
+          <MainDashboard 
+            tasks={tasks}
+            projects={projects}
+            habits={habits}
+            onTaskComplete={handleTaskComplete}
+            onTaskEdit={handleTaskEdit}
+          />
         );
     }
   };
@@ -134,7 +119,6 @@ const AuthenticatedApp: React.FC = () => {
               isDarkMode={isDarkMode} 
               onThemeToggle={toggleTheme} 
             />
-            <UserProfile />
           </div>
         </header>
 
