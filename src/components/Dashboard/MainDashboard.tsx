@@ -29,7 +29,12 @@ const MainDashboard: React.FC<MainDashboardProps> = ({
       <div className="grid grid-cols-3 gap-8 h-[calc(100vh-12rem)]">
         {/* Left column - Today's Calendar */}
         <div className="col-span-1">
-          <TodaysCalendar />
+          <TodaysCalendar 
+            tasks={tasks}
+            projects={projects}
+            onTaskComplete={onTaskComplete}
+            onTaskEdit={onTaskEdit}
+          />
         </div>
         
         {/* Right side - 2 columns, 3 rows */}
