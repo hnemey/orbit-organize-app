@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TabType, Habit, Project, Task } from '@/types';
 import TabNavigation from '@/components/TabNavigation';
 import HabitsPage from '@/components/Habits/HabitsPage';
@@ -7,7 +7,10 @@ import ProjectsPage from '@/components/Projects/ProjectsPage';
 import CalendarPage from '@/components/Calendar/CalendarPage';
 import SettingsDropdown from '@/components/Settings/SettingsDropdown';
 import UserProfile from '@/components/Auth/UserProfile';
+import TodaysSchedule from '@/components/Dashboard/TodaysSchedule';
+import HabitProgressChart from '@/components/Dashboard/HabitProgressChart';
 import { useTheme } from '@/contexts/ThemeContext';
+import { loadHabits, saveHabits, loadProjects, saveProjects, loadTasks, saveTasks } from '@/utils/storage';
 
 const AuthenticatedApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
@@ -18,13 +21,56 @@ const AuthenticatedApp: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
 
+  // Load data from localStorage on mount
+  useEffect(() => {
+    setHabits(loadHabits());
+    setProjects(loadProjects());
+    setTasks(loadTasks());
+  }, []);
+
+  // Save data to localStorage when it changes
+  useEffect(() => {
+    saveHabits(habits);
+  }, [habits]);
+
+  useEffect(() => {
+    saveProjects(projects);
+  }, [projects]);
+
+  useEffect(() => {
+    saveTasks(tasks);
+  }, [tasks]);
+
+  const handleTaskComplete = (taskId: string) => {
+    setTasks(prevTasks => 
+      prevTasks.map(task => 
+        task.id === taskId ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  const handleTaskEdit = (task: Task) => {
+    // This would open a task edit modal - for now just log
+    console.log('Edit task:', task);
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <div className="p-8 text-white">
-          <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-          <p className="text-gray-300">Welcome to your productivity dashboard!</p>
-        </div>;
+        return (
+          <div className="p-8">
+            <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <TodaysSchedule 
+                tasks={tasks}
+                projects={projects}
+                onTaskComplete={handleTaskComplete}
+                onTaskEdit={handleTaskEdit}
+              />
+              <HabitProgressChart habits={habits} />
+            </div>
+          </div>
+        );
       case 'habits':
         return <HabitsPage habits={habits} onHabitsChange={setHabits} />;
       case 'projects':
@@ -41,10 +87,20 @@ const AuthenticatedApp: React.FC = () => {
           onTasksChange={setTasks}
         />;
       default:
-        return <div className="p-8 text-white">
-          <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
-          <p className="text-gray-300">Welcome to your productivity dashboard!</p>
-        </div>;
+        return (
+          <div className="p-8">
+            <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <TodaysSchedule 
+                tasks={tasks}
+                projects={projects}
+                onTaskComplete={handleTaskComplete}
+                onTaskEdit={handleTaskEdit}
+              />
+              <HabitProgressChart habits={habits} />
+            </div>
+          </div>
+        );
     }
   };
 
