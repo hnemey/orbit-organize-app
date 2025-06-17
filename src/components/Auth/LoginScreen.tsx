@@ -21,6 +21,11 @@ const LoginScreen: React.FC = () => {
       return;
     }
 
+    if (password.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+
     try {
       setIsLoading(true);
       
@@ -31,6 +36,10 @@ const LoginScreen: React.FC = () => {
         await signInWithEmail(email, password);
         toast.success('Signed in successfully!');
       }
+      
+      // Clear form
+      setEmail('');
+      setPassword('');
     } catch (error: any) {
       console.error('Auth error:', error);
       
@@ -38,6 +47,9 @@ const LoginScreen: React.FC = () => {
         toast.error('Invalid email or password. Please try again.');
       } else if (error?.message?.includes('User already registered')) {
         toast.error('This email is already registered. Try signing in instead.');
+        setIsSignUp(false);
+      } else if (error?.message?.includes('Email not confirmed')) {
+        toast.error('Please check your email and click the confirmation link.');
       } else {
         toast.error(error?.message || 'Authentication failed. Please try again.');
       }
@@ -68,6 +80,7 @@ const LoginScreen: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
+                disabled={isLoading}
                 required
               />
             </div>
@@ -79,14 +92,16 @@ const LoginScreen: React.FC = () => {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                placeholder="Enter your password (min 6 characters)"
+                disabled={isLoading}
                 required
+                minLength={6}
               />
             </div>
 
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !email || !password}
               className="w-full h-12"
             >
               {isLoading ? 'Loading...' : (isSignUp ? 'Sign Up' : 'Sign In')}
@@ -96,7 +111,8 @@ const LoginScreen: React.FC = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsSignUp(!isSignUp)}
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium"
+              disabled={isLoading}
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 text-sm font-medium disabled:opacity-50"
             >
               {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Sign up"}
             </button>
