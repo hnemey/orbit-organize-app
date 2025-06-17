@@ -1,8 +1,7 @@
 
 import React, { useState } from 'react';
-import { TabType } from '@/types';
+import { TabType, Habit, Project, Task } from '@/types';
 import TabNavigation from '@/components/TabNavigation';
-import Index from '@/pages/Index';
 import HabitsPage from '@/components/Habits/HabitsPage';
 import ProjectsPage from '@/components/Projects/ProjectsPage';
 import CalendarPage from '@/components/Calendar/CalendarPage';
@@ -13,19 +12,39 @@ import { useTheme } from '@/contexts/ThemeContext';
 const AuthenticatedApp: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('dashboard');
   const { isDarkMode, toggleTheme } = useTheme();
+  
+  // State for habits, projects, and tasks
+  const [habits, setHabits] = useState<Habit[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Index />;
+        return <div className="p-8 text-white">
+          <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+          <p className="text-gray-300">Welcome to your productivity dashboard!</p>
+        </div>;
       case 'habits':
-        return <HabitsPage />;
+        return <HabitsPage habits={habits} onHabitsChange={setHabits} />;
       case 'projects':
-        return <ProjectsPage />;
+        return <ProjectsPage 
+          projects={projects} 
+          tasks={tasks}
+          onProjectsChange={setProjects}
+          onTasksChange={setTasks}
+        />;
       case 'calendar':
-        return <CalendarPage />;
+        return <CalendarPage 
+          tasks={tasks}
+          projects={projects}
+          onTasksChange={setTasks}
+        />;
       default:
-        return <Index />;
+        return <div className="p-8 text-white">
+          <h1 className="text-3xl font-bold mb-4">Dashboard</h1>
+          <p className="text-gray-300">Welcome to your productivity dashboard!</p>
+        </div>;
     }
   };
 
