@@ -9,6 +9,7 @@ import SettingsDropdown from '@/components/Settings/SettingsDropdown';
 import UserProfile from '@/components/Auth/UserProfile';
 import TodaysSchedule from '@/components/Dashboard/TodaysSchedule';
 import HabitProgressChart from '@/components/Dashboard/HabitProgressChart';
+import Timer from '@/components/Dashboard/Timer';
 import { useTheme } from '@/contexts/ThemeContext';
 import { loadHabits, saveHabits, loadProjects, saveProjects, loadTasks, saveTasks } from '@/utils/storage';
 
@@ -60,13 +61,14 @@ const AuthenticatedApp: React.FC = () => {
         return (
           <div className="p-8">
             <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
               <TodaysSchedule 
                 tasks={tasks}
                 projects={projects}
                 onTaskComplete={handleTaskComplete}
                 onTaskEdit={handleTaskEdit}
               />
+              <Timer />
               <HabitProgressChart habits={habits} />
             </div>
           </div>
@@ -90,13 +92,14 @@ const AuthenticatedApp: React.FC = () => {
         return (
           <div className="p-8">
             <h1 className="text-3xl font-bold text-white mb-8">Dashboard</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
               <TodaysSchedule 
                 tasks={tasks}
                 projects={projects}
                 onTaskComplete={handleTaskComplete}
                 onTaskEdit={handleTaskEdit}
               />
+              <Timer />
               <HabitProgressChart habits={habits} />
             </div>
           </div>
